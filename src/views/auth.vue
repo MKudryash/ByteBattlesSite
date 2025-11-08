@@ -516,38 +516,53 @@ export default {
       this.activeTab = tab
     },
 
-    async handleLogin() {
-      this.loading = true
+   async handleLogin() {
+  this.loading = true
+  
+  try {
+    const userData = {
+      email: this.loginForm.email,
+      password: this.loginForm.password
+    }
+
+    const response = await fetch("http://hobbit1021.ru:50305/api/auth/login", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // ИСПРАВЛЕНА ОПЕЧАТКА
+        'accept': '*/*'
+      },
+      body: JSON.stringify(userData)
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log("Success: ", data)
+    
+    // Сохраняем токен
+    if (data.accessToken) {
+      localStorage.setItem('token', data.accessToken)
+      localStorage.setItem('user', JSON.stringify({
+        email: this.loginForm.email
+      }))
       
-      try {
-        // Имитация API запроса
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        
-        // Сохраняем данные пользователя
-        const userData = {
-          id: 1,
-          firstName: 'Иван',
-          lastName: 'Петров',
-          email: this.loginForm.email,
-          role: 'teacher'
-        }
-        
-        localStorage.setItem('user', JSON.stringify(userData))
-        localStorage.setItem('token', 'mock-jwt-token')
-        if (this.loginForm.rememberMe) {
-          localStorage.setItem('rememberMe', 'true')
-        }
-        
-        // Перенаправляем на главную страницу
-        this.$router.push('/')
-        
-      } catch (error) {
-        console.error('Login error:', error)
-        // Здесь можно добавить обработку ошибок
-      } finally {
-        this.loading = false
+      if (this.loginForm.rememberMe) {
+        localStorage.setItem('rememberMe', 'true')
       }
-    },
+      
+      // Перенаправляем на главную страницу
+      this.$router.push('/')
+    }
+    
+  } catch (error) {
+    console.error('Login error:', error)
+    alert('Ошибка входа: ' + error.message)
+  } finally {
+    this.loading = false
+  }
+},
 
     async handleRegister() {
       if (this.registerForm.password !== this.registerForm.confirmPassword) {
