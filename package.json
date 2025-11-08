@@ -1,22 +1,35 @@
 {
-  "name": "bytebattlesapp",
-  "version": "0.0.0",
+  "name": "sarcastic-affectionate-gerbil",
+  "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "engines": {
-    "node": "^20.19.0 || >=22.12.0"
-  },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
   },
   "dependencies": {
-    "vue": "^3.5.22"
+    "vue": "^2.6.7",
+    "vue-router": "^3.0.2",
+    "vue-meta": "^2.2.1",
+    "@lottiefiles/vue-lottie-player": "1.0.4",
+    "dangerous-html": "0.1.13",
+    "next": "^12.1.10",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.1",
-    "vite": "^7.1.11",
-    "vite-plugin-vue-devtools": "^8.0.3"
-  }
+    "@vue/babel-preset-app": "^5.0.8",
+    "@vue/cli-plugin-babel": "^5.0.4",
+    "@vue/cli-service": "^5.0.8",
+    "vue-template-compiler": "^2.6.7"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }
