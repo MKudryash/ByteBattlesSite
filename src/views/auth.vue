@@ -518,14 +518,15 @@ export default {
 
    async handleLogin() {
   this.loading = true
-  
+  this.errorMessage = ''
   try {
     const userData = {
       email: this.loginForm.email,
-      password: this.loginForm.password
+      password: this.loginForm.password,
     }
 
     const response = await fetch("http://hobbit1021.ru:50305/api/auth/login", {
+    //const response = await fetch("http://localhost:50307/api/auth/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // ИСПРАВЛЕНА ОПЕЧАТКА
@@ -548,11 +549,11 @@ export default {
       if (this.loginForm.rememberMe) {
         localStorage.setItem('rememberMe', 'true')
       }
-      
+
       // Перенаправляем на главную страницу
       this.$router.push('/')
 
-    
+
   } catch (error) {
     console.error('Login error:', error)
     alert('Ошибка входа: ' + error.message)
@@ -575,6 +576,7 @@ export default {
           lastName: this.registerForm.lastName,
           email: this.registerForm.email,
           password: this.registerForm.password,
+          role: ["admin"]
         }
         const response = await fetch("http://hobbit1021.ru:50305/api/auth/register", {
           method: 'POST',

@@ -41,7 +41,7 @@
                   stroke-linejoin="round"
                 ></path>
               </svg>
-              <span class="footer-logo-text">CodeCraft Template</span>
+              <span class="footer-logo-text">ByteBattles Template</span>
             </div>
             <p class="footer-tagline">
               Создайте идеальные шаблоны задач для обучения программированию
@@ -50,32 +50,6 @@
             <div class="footer-vintage-badge">
               <span class="footer-badge-text">С 2025</span>
             </div>
-          </div>
-          <div class="footer-newsletter">
-            <h3 class="footer-newsletter-title">Новости и Обновления</h3>
-            <p class="footer-newsletter-desc">
-              Получайте свежие материалы и советы по преподаванию программирования
-              <span v-html="rawjr9u"></span>
-            </p>
-            <form
-              data-form-id="efc4821d-d66c-46a0-ac45-993fd3dc9ad6"
-              class="footer-newsletter-form"
-            >
-              <input
-                type="email"
-                name="textinput yd3hz7g224"
-                required="true"
-                placeholder="Ваш email"
-                class="footer-newsletter-input"
-              />
-              <button
-                name="button 1t1n2zbob"
-                type="submit"
-                class="btn-accent btn"
-              >
-                Подписаться
-              </button>
-            </form>
           </div>
         </div>
         <div class="footer-grid">
@@ -194,116 +168,116 @@
               </li>
             </ul>
           </div>
-          <div class="footer-column">
-            <h4 class="footer-column-title">
-              <svg
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </svg>
-              <span>
-                Сообщество
-                <span v-html="rawofe6"></span>
-              </span>
-            </h4>
-            <ul class="footer-links">
-              <li>
-                <a href="#forum">
-                  <div class="footer-link"><span>Форум</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#discord">
-                  <div class="footer-link"><span>Discord Сервер</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#teachers">
-                  <div class="footer-link"><span>Сеть Преподавателей</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#student-showcase">
-                  <div class="footer-link"><span>Работы Студентов</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#events">
-                  <div class="footer-link"><span>События</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#contribute">
-                  <div class="footer-link"><span>Внести Вклад</span></div>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div class="footer-column">
-            <h4 class="footer-column-title">
-              <svg
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </svg>
-              <span>
-                Компания
-                <span v-html="rawkdaf"></span>
-              </span>
-            </h4>
-            <ul class="footer-links">
-              <li>
-                <a href="#about">
-                  <div class="footer-link"><span>О Нас</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#team">
-                  <div class="footer-link"><span>Команда</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#careers">
-                  <div class="footer-link"><span>Карьера</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#press">
-                  <div class="footer-link"><span>Пресс-Кит</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#partners">
-                  <div class="footer-link"><span>Партнёры</span></div>
-                </a>
-              </li>
-              <li>
-                <a href="#contact">
-                  <div class="footer-link"><span>Контакты</span></div>
-                </a>
-              </li>
-            </ul>
-          </div>
+<!--          <div class="footer-column">-->
+<!--            <h4 class="footer-column-title">-->
+<!--              <svg-->
+<!--                width="24"-->
+<!--                xmlns="http://www.w3.org/2000/svg"-->
+<!--                height="24"-->
+<!--                viewBox="0 0 24 24"-->
+<!--              >-->
+<!--                <path-->
+<!--                  d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"-->
+<!--                  fill="none"-->
+<!--                  stroke="currentColor"-->
+<!--                  stroke-width="2"-->
+<!--                  stroke-linecap="round"-->
+<!--                  stroke-linejoin="round"-->
+<!--                ></path>-->
+<!--              </svg>-->
+<!--              <span>-->
+<!--                Сообщество-->
+<!--                <span v-html="rawofe6"></span>-->
+<!--              </span>-->
+<!--            </h4>-->
+<!--            <ul class="footer-links">-->
+<!--              <li>-->
+<!--                <a href="#forum">-->
+<!--                  <div class="footer-link"><span>Форум</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#discord">-->
+<!--                  <div class="footer-link"><span>Discord Сервер</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#teachers">-->
+<!--                  <div class="footer-link"><span>Сеть Преподавателей</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#student-showcase">-->
+<!--                  <div class="footer-link"><span>Работы Студентов</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#events">-->
+<!--                  <div class="footer-link"><span>События</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#contribute">-->
+<!--                  <div class="footer-link"><span>Внести Вклад</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </div>-->
+<!--          <div class="footer-column">-->
+<!--            <h4 class="footer-column-title">-->
+<!--              <svg-->
+<!--                width="24"-->
+<!--                xmlns="http://www.w3.org/2000/svg"-->
+<!--                height="24"-->
+<!--                viewBox="0 0 24 24"-->
+<!--              >-->
+<!--                <path-->
+<!--                  d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15"-->
+<!--                  fill="none"-->
+<!--                  stroke="currentColor"-->
+<!--                  stroke-width="2"-->
+<!--                  stroke-linecap="round"-->
+<!--                  stroke-linejoin="round"-->
+<!--                ></path>-->
+<!--              </svg>-->
+<!--              <span>-->
+<!--                Компания-->
+<!--                <span v-html="rawkdaf"></span>-->
+<!--              </span>-->
+<!--            </h4>-->
+<!--            <ul class="footer-links">-->
+<!--              <li>-->
+<!--                <a href="#about">-->
+<!--                  <div class="footer-link"><span>О Нас</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#team">-->
+<!--                  <div class="footer-link"><span>Команда</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#careers">-->
+<!--                  <div class="footer-link"><span>Карьера</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#press">-->
+<!--                  <div class="footer-link"><span>Пресс-Кит</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#partners">-->
+<!--                  <div class="footer-link"><span>Партнёры</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--              <li>-->
+<!--                <a href="#contact">-->
+<!--                  <div class="footer-link"><span>Контакты</span></div>-->
+<!--                </a>-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </div>-->
         </div>
         <div class="footer-contact-section">
           <div class="footer-contact-card">
@@ -560,26 +534,26 @@
     // Smooth newsletter form submission
     const newsletterForm = document.querySelector('.footer-newsletter-form')
     const newsletterInput = document.querySelector('.footer-newsletter-input')
-  
+
     if (newsletterForm && newsletterInput) {
       newsletterForm.addEventListener('submit', function (e) {
         e.preventDefault()
-  
+
         const email = newsletterInput.value.trim()
-  
+
         if (email) {
           // Add vintage-style loading animation
           const submitBtn = this.querySelector('.btn')
           const originalText = submitBtn.textContent
-  
+
           submitBtn.textContent = 'Отправка...'
           submitBtn.disabled = true
-  
+
           // Simulate API call
           setTimeout(function () {
             submitBtn.textContent = 'Готово!'
             submitBtn.style.background = 'var(--color-accent)'
-  
+
             setTimeout(function () {
               submitBtn.textContent = originalText
               submitBtn.disabled = false
@@ -590,18 +564,18 @@
         }
       })
     }
-  
+
     // Vintage typewriter effect for tagline (subtle)
     const tagline = document.querySelector('.footer-tagline')
     if (tagline) {
       const text = tagline.textContent
       tagline.textContent = ''
       tagline.style.opacity = '0'
-  
+
       setTimeout(function () {
         tagline.style.opacity = '1'
         let index = 0
-  
+
         const typeWriter = setInterval(function () {
           if (index < text.length) {
             tagline.textContent += text.charAt(index)
@@ -612,45 +586,45 @@
         }, 30)
       }, 500)
     }
-  
+
     // Add vintage stamp effect on badge click
     const vintageBadge = document.querySelector('.footer-vintage-badge')
     if (vintageBadge) {
       vintageBadge.addEventListener('click', function () {
         this.style.transform = 'rotate(-2deg) scale(0.95)'
-  
+
         setTimeout(() => {
           this.style.transform = 'rotate(2deg) scale(1.05)'
-  
+
           setTimeout(() => {
             this.style.transform = ''
           }, 200)
         }, 100)
       })
     }
-  
+
     // Social links subtle hover sound effect simulation (visual feedback)
     const socialLinks = document.querySelectorAll('.footer-social-link')
     socialLinks.forEach(function (link) {
       link.addEventListener('mouseenter', function () {
         this.style.transition = 'all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55)'
       })
-  
+
       link.addEventListener('mouseleave', function () {
         this.style.transition = 'all 0.3s var(--animation-curve-primary)'
       })
     })
-  
+
     // Intersection Observer for fade-in animations
     const footerColumns = document.querySelectorAll(
       '.footer-column, .footer-contact-card'
     )
-  
+
     const observerOptions = {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px',
     }
-  
+
     const fadeInObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry, index) {
         if (entry.isIntersecting) {
@@ -658,23 +632,23 @@
             entry.target.style.opacity = '1'
             entry.target.style.transform = 'translateY(0)'
           }, index * 100)
-  
+
           fadeInObserver.unobserve(entry.target)
         }
       })
     }, observerOptions)
-  
+
     footerColumns.forEach(function (element) {
       element.style.opacity = '0'
       element.style.transform = 'translateY(20px)'
       element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out'
       fadeInObserver.observe(element)
     })
-  
+
     // Add vintage paper texture animation on scroll
     let lastScrollTop = 0
     const textureElement = document.querySelector('.footer-background-texture')
-  
+
     if (textureElement) {
       window.addEventListener(
         'scroll',
@@ -682,7 +656,7 @@
           const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop
           const scrollDelta = scrollTop - lastScrollTop
-  
+
           if (Math.abs(scrollDelta) > 10) {
             const currentOpacity = parseFloat(
               getComputedStyle(textureElement).opacity
@@ -693,7 +667,7 @@
             )
             textureElement.style.opacity = newOpacity.toString()
           }
-  
+
           lastScrollTop = scrollTop
         },
         { passive: true }
@@ -737,27 +711,27 @@ export default {
 .footer-container1 {
   display: contents;
 }
- 
+
 .footer-container2 {
   display: none;
 }
- 
+
 .footer-container3 {
   display: contents;
 }
- 
+
 .footer-container4 {
   display: none;
 }
- 
+
 .footer-container5 {
   display: contents;
 }
- 
+
 .footer-container6 {
   display: none;
 }
- 
+
 .footer-container7 {
   display: contents;
 }

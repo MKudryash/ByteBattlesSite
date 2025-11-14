@@ -1,1940 +1,1076 @@
 <template>
   <div class="task-template-builder-container10">
     <app-navigation></app-navigation>
+
     <div class="task-template-builder-container11">
       <div class="task-template-builder-container12">
         <DangerousHTML
-          html="<style>
-  #hero-section {
+            html="<style>
+  .builder-container {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: var(--spacing-4xl) var(--spacing-lg);
     background: var(--color-surface);
-    position: relative;
+    padding: var(--spacing-2xl) 0;
   }
-  #hero-section::before {
+
+  .builder-container::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: repeating-linear-gradient(
+    background-image:
+      radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--color-primary) 8%, transparent) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--color-secondary) 6%, transparent) 0%, transparent 50%),
+      repeating-linear-gradient(
         0deg,
         transparent,
         transparent 2px,
-        color-mix(in srgb, var(--color-border) 10%, transparent) 2px,
-        color-mix(in srgb, var(--color-border) 10%, transparent) 4px
+        color-mix(in srgb, var(--color-border) 5%, transparent) 2px,
+        color-mix(in srgb, var(--color-border) 5%, transparent) 4px
       );
     pointer-events: none;
     z-index: 1;
-    opacity: 0.3;
   }
-  #process-section {
-    padding: var(--spacing-3xl) var(--spacing-2xl);
+
+  .wizard-progress {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .retro-card {
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-level-1);
+    position: relative;
+  }
+
+  .retro-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+  }
+
+  .vintage-border {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
     background: var(--color-surface);
+    box-shadow:
+      inset 0 1px 2px color-mix(in srgb, var(--color-on-surface) 5%, transparent),
+      0 2px 4px color-mix(in srgb, var(--color-neutral) 8%, transparent);
   }
-  #settings-section {
-    padding: var(--spacing-4xl) var(--spacing-lg);
-    background: var(--color-surface);
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  #docs-section {
-    padding: var(--spacing-4xl) var(--spacing-lg);
-    background: var(--color-surface);
+
+  .step-content {
+    animation: slideIn 0.5s var(--animation-curve-primary);
   }
-  #documentation-section {
-    padding: var(--spacing-4xl) var(--spacing-lg);
-    background: var(--color-surface);
-  }
-  #dashboard-section {
-    padding: var(--spacing-4xl) var(--spacing-lg);
-    background: var(--color-surface);
-  }
-  #stats-section {
-    padding: var(--spacing-4xl) var(--spacing-lg);
-    background: var(--color-surface);
-  }
-  #faq-section {
-    padding: var(--spacing-4xl) var(--spacing-lg);
-    background: var(--color-surface);
-  }
+
   @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
   </style>"
         ></DangerousHTML>
       </div>
     </div>
-    <section
-      id="hero-section"
-      role="region"
-      aria-label="Intro to Task Template Builder"
-    >
-      <div class="hero-container">
-        <div class="hero-panel">
-          <div class="hero-grid">
-            <div class="hero-head">
-              <h1 class="hero-title task-template-builder-hero-title">
-                Task Template Builder
-              </h1>
-              <p class="hero-lead">Ретро-интерфейс для современного обучения</p>
+
+    <section class="builder-container" role="main" aria-label="Конструктор учебных задач">
+      <div class="container">
+        <!-- Заголовок и прогресс -->
+        <div class="builder-header">
+          <div class="title-section">
+            <h1 class="builder-title">
+              <span class="title-icon">📝</span>
+              Конструктор учебных задач
+            </h1>
+            <p class="builder-subtitle">
+              Создавайте структурированные задания в винтажном стиле для любого языка программирования
+            </p>
+          </div>
+
+          <!-- Прогресс-бар -->
+          <div class="wizard-progress retro-card">
+            <div class="progress-bar">
+              <div class="progress-fill" :style="{width: `${(currentStep / steps.length) * 100}%`}"></div>
             </div>
-            <div class="controls-card">
-              <h2 class="controls-title">Конфигурация шаблона</h2>
-              <div class="form-group">
-                <label for="language-select">Язык программирования</label>
-                <select id="language-select" aria-label="Language">
-                  <option value="python">Python 3.10</option>
-                  <option value="cpp">C++ 17</option>
-                  <option value="java">Java 11</option>
-                  <option value="csharp">C# 10</option>
-                </select>
-              </div>
-              <div class="library-section">
-                <label>Библиотеки</label>
-                <div class="chip-container">
-                  <button role="button" aria-pressed="true" class="chip">
-                    <svg
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="16"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      NumPy
-                      <span v-html="rawvb1s"></span>
-                    </span>
-                  </button>
-                  <button role="button" aria-pressed="false" class="chip">
-                    <svg
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="16"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Pandas
-                      <span v-html="rawjkm7"></span>
-                    </span>
-                  </button>
-                  <button role="button" aria-pressed="false" class="chip">
-                    <svg
-                      width="16"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="16"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Matplotlib
-                      <span v-html="rawuxah"></span>
-                    </span>
-                  </button>
+            <div class="steps-indicator">
+              <span class="step-counter">Шаг {{ currentStep }} из {{ steps.length }}</span>
+              <span class="step-name">{{ steps[currentStep - 1]?.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wizard-layout">
+          <!-- Боковая панель с шагами -->
+          <aside class="wizard-sidebar" role="navigation" aria-label="Шаги создания задачи">
+            <nav class="steps-nav retro-card">
+              <div
+                  v-for="(step, index) in steps"
+                  :key="index"
+                  :class="['step-nav-item', {
+                  'active': currentStep === index + 1,
+                  'completed': currentStep > index + 1
+                }]"
+                  @click="goToStep(index + 1)"
+              >
+                <div class="step-nav-icon">
+                  <span v-if="currentStep > index + 1">✓</span>
+                  <span v-else>{{ index + 1 }}</span>
+                </div>
+                <div class="step-nav-content">
+                  <h3>{{ step.name }}</h3>
+                  <p>{{ step.description }}</p>
                 </div>
               </div>
-              <div class="template-preview">
-                <label>Шаблон функции</label>
-                <pre><span>def calculate_sum(numbers):
-      &quot;&quot;&quot;
-      Вычисляет сумму элементов списка
-      Args: numbers (list)
-      Returns: int
-      &quot;&quot;&quot;
-      pass</span></pre>
-              </div>
-              <button class="cta btn-primary btn">Начать создание</button>
-            </div>
-            <div class="code-panel">
-              <div class="panel-header">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="m16 18l6-6l-6-6M8 6l-6 6l6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-                <span>Предпросмотр</span>
-              </div>
-              <pre class="code-block"><span># main.py
-  import numpy as np
-  
-  def calculate_sum(numbers):
-      &quot;&quot;&quot;Функция для задачи&quot;&quot;&quot;
-      pass
-  
-  if __name__ == &quot;__main__&quot;:
-      data = [1, 2, 3, 4, 5]
-      result = calculate_sum(data)
-      print(f&quot;Result: &#123;result&#125;&quot;)</span></pre>
-              <ul aria-label="Quick statistics" class="stats-list">
-                <li>
-                  <svg
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="16"
-                    viewBox="0 0 24 24"
-                  >
-                    <g
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M12 6v6l4 2"></path>
-                      <circle r="10" cx="12" cy="12"></circle>
-                    </g>
-                  </svg>
-                  <span>Среднее время: 22 мин</span>
-                </li>
-                <li>
-                  <svg
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="16"
-                    viewBox="0 0 24 24"
-                  >
-                    <g
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3.128a4 4 0 0 1 0 7.744M22 21v-2a4 4 0 0 0-3-3.87"
-                      ></path>
-                      <circle r="4" cx="9" cy="7"></circle>
-                    </g>
-                  </svg>
-                  <span>Используется: 1,920 раз</span>
-                </li>
-                <li>
-                  <svg
-                    width="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="16"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M20 6L9 17l-5-5"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </svg>
-                  <span>Успешность: 87%</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="process-section" role="region" aria-labelledby="process-title">
-      <div class="process-container">
-        <div class="process-layout">
-          <nav role="navigation" aria-label="Process steps" class="stepper">
-            <div aria-current="step" class="step-item">
-              <div aria-hidden="true" class="step-number"><span>1</span></div>
-              <div class="step-content">
-                <h3 class="step-title">Выбор языка</h3>
-                <p class="step-hint">Определите целевую платформу</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div aria-hidden="true" class="step-number"><span>2</span></div>
-              <div class="step-content">
-                <h3 class="step-title">Библиотеки</h3>
-                <p class="step-hint">Добавьте зависимости</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div aria-hidden="true" class="step-number"><span>3</span></div>
-              <div class="step-content">
-                <h3 class="step-title">Функция</h3>
-                <p class="step-hint">Задайте сигнатуру</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div aria-hidden="true" class="step-number"><span>4</span></div>
-              <div class="step-content">
-                <h3 class="step-title">Main</h3>
-                <p class="step-hint">Определите вызов</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div aria-hidden="true" class="step-number"><span>5</span></div>
-              <div class="step-content">
-                <h3 class="step-title">Проверки</h3>
-                <p class="step-hint">Добавьте тесты</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div aria-hidden="true" class="step-number"><span>6</span></div>
-              <div class="step-content">
-                <h3 class="step-title">Публикация</h3>
-                <p class="step-hint">Сохраните шаблон</p>
-              </div>
-            </div>
-          </nav>
-          <div class="work-area">
-            <h2 id="process-title" class="section-title">
-              Пошаговый мастер создания задач
-              <span v-html="raw071s"></span>
-            </h2>
-            <div class="work-card">
-              <h3 class="card-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="m16 18l6-6l-6-6M8 6l-6 6l6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-                <span>
-                  1. Выбор языка программирования
-                  <span v-html="raw4vw0"></span>
+            </nav>
+
+            <!-- Быстрый предпросмотр -->
+            <div class="quick-preview retro-card">
+              <h4>
+                <span class="preview-icon">👁️</span>
+                Быстрый предпросмотр
+              </h4>
+              <div class="preview-badges">
+                <span class="preview-badge" v-if="taskData.title">
+                  📌 {{ taskData.title }}
                 </span>
-              </h3>
-              <p class="card-body">
-                Аккуратно отметьте целевую платформу (Python, C++, Java и др.).
-                Подсказки в винтажном стиле помогут учитывать особенности
-                синтаксиса и версий.
-                <span v-html="rawg1ys"></span>
-              </p>
-              <div class="language-options">
-                <button class="btn-outline btn option-btn">Python 3.10</button>
-                <button class="btn-outline btn option-btn">C++ 17</button>
-                <button class="btn-outline btn option-btn">Java 11</button>
+                <span class="preview-badge" v-if="taskData.language">
+                  💻 {{ getLanguageName(taskData.language) }}
+                </span>
+                <span class="preview-badge" v-if="taskData.functionName">
+                  🔧 {{ taskData.functionName }}()
+                </span>
+                <span class="preview-badge" v-if="taskData.tests.length">
+                  ✅ {{ taskData.tests.length }} тест{{ taskData.tests.length > 1 ? 'ов' : '' }}
+                </span>
+                <span class="preview-badge" v-if="taskData.difficulty">
+                  🎯 {{ getDifficultyLabel(taskData.difficulty) }}
+                </span>
               </div>
             </div>
-            <div class="work-card">
-              <h3 class="card-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-                <span>
-                  2. Подключение библиотек
-                  <span v-html="raw7ybv"></span>
-                </span>
-              </h3>
-              <p class="card-body">
-                Добавьте список зависимостей с возможностью версионирования.
-                Каждый пакет отображается как аккуратно помеченная карточка для
-                быстрого контроля.
-                <span v-html="raw32jf"></span>
-              </p>
-              <div class="library-tags">
-                <span class="tag">NumPy 1.23.0</span>
-                <span class="tag">Pandas 1.5.3</span>
-                <span class="tag">Matplotlib 3.7.1</span>
+
+            <!-- Статистика -->
+            <div class="stats-preview retro-card">
+              <h4>📊 Статистика задачи</h4>
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <span class="stat-value">{{ taskData.parameters.length }}</span>
+                  <span class="stat-label">параметров</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ taskData.libraries.length }}</span>
+                  <span class="stat-label">библиотек</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ taskData.tests.length }}</span>
+                  <span class="stat-label">тестов</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-value">{{ taskData.examples.length }}</span>
+                  <span class="stat-label">примеров</span>
+                </div>
               </div>
-            </div>
-            <div class="work-card">
-              <h3 class="card-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <rect x="3" y="3" rx="2" ry="2" width="18" height="18"></rect>
-                    <path
-                      d="M9 17c2 0 2.8-1 2.8-2.8V10c0-2 1-3.3 3.2-3m-6 4.2h5.7"
-                    ></path>
-                  </g>
-                </svg>
-                <span>
-                  3. Шаблон функции
-                  <span v-html="rawzvz0"></span>
-                </span>
-              </h3>
-              <p class="card-body">
-                Задайте сигнатуру, описание параметров и ожидаемый результат.
-                Встроенные примечания в ретро-тоне напоминают о лучших практиках.
-                <span v-html="rawmzmw"></span>
-              </p>
-              <pre
-                class="code-snippet"
-              ><span>def process_data(input_list: list) -&gt; int:
-      &quot;&quot;&quot;
-      Обрабатывает входные данные
-      Параметры:
-          input_list: список целых чисел
-      Возвращает:
-          обработанный результат
-      &quot;&quot;&quot;
-      # Ваша реализация здесь
-      pass</span></pre>
-            </div>
-            <div class="work-card">
-              <h3 class="card-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-                <span>
-                  4. Вызов из main
-                  <span v-html="raw135x"></span>
-                </span>
-              </h3>
-              <p class="card-body">
-                Определите каркас main-скрипта или точки входа, порядок
-                чтения/записи и пример вызова функции для демонстрации.
-                <span v-html="raw29lq"></span>
-              </p>
-              <pre class="code-snippet"><span>if __name__ == &quot;__main__&quot;:
-      data = [1, 2, 3, 4, 5]
-      result = process_data(data)
-      print(f&quot;Результат: &#123;result&#125;&quot;)</span></pre>
-            </div>
-            <div class="work-card">
-              <h3 class="card-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M20 6L9 17l-5-5"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-                <span>
-                  5. Проверки и примеры
-                  <span v-html="raw2hf3"></span>
-                </span>
-              </h3>
-              <p class="card-body">
-                Добавьте тест-кейсы и образцы ввода-вывода прямо в процессе —
-                студенты увидят, как задача оценивается.
-                <span v-html="raw0rvi"></span>
-              </p>
-            </div>
-            <div class="work-card">
-              <h3 class="card-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
-                    ></path>
-                    <path
-                      d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7M7 3v4a1 1 0 0 0 1 1h7"
-                    ></path>
-                  </g>
-                </svg>
-                <span>
-                  6. Сохранение и публикация
-                  <span v-html="raw4lsj"></span>
-                </span>
-              </h3>
-              <p class="card-body">
-                Сохраните шаблон в библиотеку, назначьте уровень сложности и
-                метки. История версий сохраняет действия, как старые пометки
-                учителя в тетради.
-                <span v-html="rawycll"></span>
-              </p>
-              <div class="action-buttons">
-                <button class="btn-primary btn">Сохранить черновик</button>
-                <button class="btn-accent btn">Опубликовать</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="settings-section" role="region" aria-label="Configuration">
-      <div class="settings-container">
-        <h2 class="section-title">Настройки окружения</h2>
-        <div class="settings-grid">
-          <aside role="region" aria-label="Configuration" class="config-panel">
-            <div class="panel-group">
-              <h3 class="panel-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0a2.34 2.34 0 0 0 3.319 1.915a2.34 2.34 0 0 1 2.33 4.033a2.34 2.34 0 0 0 0 3.831a2.34 2.34 0 0 1-2.33 4.033a2.34 2.34 0 0 0-3.319 1.915a2.34 2.34 0 0 1-4.659 0a2.34 2.34 0 0 0-3.32-1.915a2.34 2.34 0 0 1-2.33-4.033a2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
-                    ></path>
-                    <circle r="3" cx="12" cy="12"></circle>
-                  </g>
-                </svg>
-                <span>
-                  Конфигурация
-                  <span v-html="rawup19"></span>
-                </span>
-              </h3>
-              <div class="form-field">
-                <label for="env-language">Язык</label>
-                <select id="env-language" aria-controls="library-list">
-                  <option>Python 3.10</option>
-                  <option>C++ 17</option>
-                  <option>Java 11</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label for="env-version">Версия</label>
-                <input type="text" id="env-version" value="3.10.12" />
-              </div>
-              <div class="saved-profiles">
-                <h4>Сохранённые профили</h4>
-                <button class="profile-item btn-outline btn">
-                  <span>Python Standard</span>
-                </button>
-                <button class="profile-item btn-outline btn">
-                  <span>C++ Competitive</span>
-                </button>
-                <button class="profile-item btn-outline btn">
-                  <span>Java Enterprise</span>
-                </button>
-              </div>
-              <button class="btn-primary btn">Сохранить профиль</button>
             </div>
           </aside>
-          <main role="main" class="work-area">
-            <div id="library-list" class="library-grid">
-              <div class="library-card">
-                <div class="card-header">
-                  <svg
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </svg>
-                  <h4>NumPy</h4>
-                </div>
-                <p class="card-version">v1.23.0</p>
-                <div class="compatibility-chips">
-                  <span aria-hidden="true" class="compat-full compat-chip">
-                    <svg
-                      width="14"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="14"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M20 6L9 17l-5-5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Совместима
-                      <span v-html="raw3jo9"></span>
-                    </span>
-                  </span>
-                </div>
-                <p class="card-note">LTS версия, стабильная</p>
+
+          <!-- Основное содержимое -->
+          <main class="wizard-main" role="region" :aria-label="`Шаг ${currentStep}: ${steps[currentStep - 1]?.name}`">
+            <!-- Шаг 1: Основная информация -->
+            <div v-if="currentStep === 1" class="step-content">
+              <div class="step-header">
+                <h2>
+                  <span class="step-icon">📋</span>
+                  Основная информация о задаче
+                </h2>
+                <p>Дайте задаче понятное название и описание, чтобы студенты понимали, что от них требуется</p>
               </div>
-              <div class="library-card">
-                <div class="card-header">
-                  <svg
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </svg>
-                  <h4>Pandas</h4>
+
+              <div class="form-grid">
+                <div class="form-section retro-card">
+                  <h3>📝 Основные данные</h3>
+
+                  <div class="form-group">
+                    <label for="task-title" class="required">
+                      <span class="label-icon">🏷️</span>
+                      Название задачи
+                    </label>
+                    <div class="input-container vintage-border">
+                      <input
+                          type="text"
+                          id="task-title"
+                          v-model="taskData.title"
+                          placeholder="Например: 'Сумма элементов массива'"
+                          maxlength="100"
+                      >
+                    </div>
+                    <div class="char-counter">{{ taskData.title.length }}/100</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="task-description" class="required">
+                      <span class="label-icon">📄</span>
+                      Описание задачи
+                    </label>
+                    <div class="input-container vintage-border">
+                      <textarea
+                          id="task-description"
+                          v-model="taskData.description"
+                          rows="6"
+                          placeholder="Подробно опишите условие задачи. Что должен сделать студент? Какие данные на входе? Что ожидается на выходе?"
+                      ></textarea>
+                    </div>
+                    <div class="hint">
+                      <span class="hint-icon">💡</span>
+                      Используйте Markdown для форматирования текста
+                    </div>
+                  </div>
                 </div>
-                <p class="card-version">v1.5.3</p>
-                <div class="compatibility-chips">
-                  <span aria-hidden="true" class="compat-full compat-chip">
-                    <svg
-                      width="14"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="14"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M20 6L9 17l-5-5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Совместима
-                      <span v-html="raw90c8"></span>
-                    </span>
-                  </span>
+
+                <div class="form-section retro-card">
+                  <h3>⚙️ Дополнительные настройки</h3>
+
+                  <div class="form-group">
+                    <label for="task-category">
+                      <span class="label-icon">📂</span>
+                      Категория
+                    </label>
+                    <div class="input-container vintage-border">
+                      <select id="task-category" v-model="taskData.category">
+                        <option value="">Выберите категорию</option>
+                        <option value="algorithms">Алгоритмы</option>
+                        <option value="data-structures">Структуры данных</option>
+                        <option value="oop">ООП</option>
+                        <option value="web">Веб-разработка</option>
+                        <option value="databases">Базы данных</option>
+                        <option value="other">Другое</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="task-difficulty" class="required">
+                      <span class="label-icon">🎯</span>
+                      Уровень сложности
+                    </label>
+                    <div class="difficulty-selector">
+                      <label
+                          v-for="diff in difficultyLevels"
+                          :key="diff.value"
+                          :class="['difficulty-option vintage-border', { 'selected': taskData.difficulty === diff.value }]"
+                      >
+                        <input
+                            type="radio"
+                            v-model="taskData.difficulty"
+                            :value="diff.value"
+                            hidden
+                        >
+                        <span class="diff-icon">{{ diff.icon }}</span>
+                        <span class="diff-label">{{ diff.label }}</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="task-tags">
+                      <span class="label-icon">🏷️</span>
+                      Теги
+                    </label>
+                    <div class="tags-input vintage-border">
+                      <div class="tags-list">
+                        <span v-for="(tag, index) in taskData.tags" :key="index" class="tag">
+                          {{ tag }}
+                          <button @click="removeTag(index)" class="tag-remove">×</button>
+                        </span>
+                      </div>
+                      <input
+                          type="text"
+                          v-model="newTag"
+                          @keydown.enter="addTag"
+                          placeholder="Введите тег и нажмите Enter"
+                      >
+                    </div>
+                    <div class="hint">
+                      <span class="hint-icon">🔍</span>
+                      Теги помогают организовать и найти задачу
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="time-estimate">
+                      <span class="label-icon">⏱️</span>
+                      Примерное время выполнения
+                    </label>
+                    <div class="time-estimate vintage-border">
+                      <input
+                          type="number"
+                          id="time-estimate"
+                          v-model.number="taskData.timeEstimate"
+                          min="5"
+                          max="180"
+                      >
+                      <span>минут</span>
+                    </div>
+                  </div>
                 </div>
-                <p class="card-note">Рекомендована для анализа данных</p>
               </div>
-              <div class="library-card">
-                <div class="card-header">
-                  <svg
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </svg>
-                  <h4>Matplotlib</h4>
+
+              <!-- Пример оформления -->
+              <div class="example-section retro-card">
+                <h3>📚 Пример хорошего описания</h3>
+                <div class="example-content">
+                  <div class="example-bad">
+                    <h4>❌ Плохо:</h4>
+                    <p>"Напишите функцию, которая что-то делает с массивом"</p>
+                  </div>
+                  <div class="example-good">
+                    <h4>✅ Хорошо:</h4>
+                    <p>"Напишите функцию <code>findMax</code>, которая принимает массив целых чисел и возвращает максимальный элемент. Если массив пуст, функция должна вернуть <code>None</code> (Python) или <code>-1</code> (C++/Java)."</p>
+                  </div>
                 </div>
-                <p class="card-version">v3.7.1</p>
-                <div class="compatibility-chips">
-                  <span aria-hidden="true" class="compat-full compat-chip">
-                    <svg
-                      width="14"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="14"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M20 6L9 17l-5-5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Совместима
-                      <span v-html="raw6fdq"></span>
-                    </span>
-                  </span>
-                </div>
-                <p class="card-note">Визуализация данных</p>
-              </div>
-              <div class="library-card">
-                <div class="card-header">
-                  <svg
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </svg>
-                  <h4>Requests</h4>
-                </div>
-                <p class="card-version">v2.28.2</p>
-                <div class="compatibility-chips">
-                  <span aria-hidden="true" class="compat-full compat-chip">
-                    <svg
-                      width="14"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="14"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M20 6L9 17l-5-5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Совместима
-                      <span v-html="raw3pqk"></span>
-                    </span>
-                  </span>
-                </div>
-                <p class="card-note">HTTP библиотека</p>
-              </div>
-              <div class="library-card">
-                <div class="card-header">
-                  <svg
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </svg>
-                  <h4>SciPy</h4>
-                </div>
-                <p class="card-version">v1.10.1</p>
-                <div class="compatibility-chips">
-                  <span aria-hidden="true" class="compat-full compat-chip">
-                    <svg
-                      width="14"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="14"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M20 6L9 17l-5-5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Совместима
-                      <span v-html="rawsszg"></span>
-                    </span>
-                  </span>
-                </div>
-                <p class="card-note">Научные вычисления</p>
-              </div>
-              <div class="library-card">
-                <div class="card-header">
-                  <svg
-                    width="20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                  </svg>
-                  <h4>Flask</h4>
-                </div>
-                <p class="card-version">v2.3.2</p>
-                <div class="compatibility-chips">
-                  <span aria-hidden="true" class="compat-full compat-chip">
-                    <svg
-                      width="14"
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="14"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M20 6L9 17l-5-5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                    <span>
-                      Совместима
-                      <span v-html="rawsxyj"></span>
-                    </span>
-                  </span>
-                </div>
-                <p class="card-note">Веб-фреймворк</p>
               </div>
             </div>
-            <div class="history-timeline">
-              <h3 class="timeline-title">
-                <svg
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="20"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+
+            <!-- Шаг 2: Сигнатура функции -->
+            <div v-if="currentStep === 2" class="step-content">
+              <div class="step-header">
+                <h2>
+                  <span class="step-icon">🔧</span>
+                  Определение функции
+                </h2>
+                <p>Опишите функцию, которую должен реализовать студент. Укажите параметры, возвращаемое значение и контракты</p>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-section retro-card">
+                  <h3>📐 Основная сигнатура</h3>
+
+                  <div class="form-group">
+                    <label for="function-name" class="required">
+                      <span class="label-icon">🏷️</span>
+                      Имя функции
+                    </label>
+                    <div class="input-container vintage-border">
+                      <input
+                          type="text"
+                          id="function-name"
+                          v-model="taskData.functionName"
+                          placeholder="calculateSum, findMax, processData..."
+                      >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>
+                      <span class="label-icon">📋</span>
+                      Параметры функции
+                    </label>
+                    <div class="params-container vintage-border">
+                      <div class="params-header">
+                        <span>Имя параметра</span>
+                        <span>Тип</span>
+                        <span>По умолчанию</span>
+                        <span>Описание</span>
+                        <span></span>
+                      </div>
+                      <div
+                          v-for="(param, index) in taskData.parameters"
+                          :key="index"
+                          class="param-row"
+                      >
+                        <input
+                            type="text"
+                            v-model="param.name"
+                            placeholder="param1"
+                            :class="['vintage-border', { 'error': !param.name && paramSubmitted }]"
+                        >
+                        <select v-model="param.type" class="vintage-border">
+                          <option v-for="type in getAvailableTypes()" :key="type" :value="type">
+                            {{ type }}
+                          </option>
+                        </select>
+                        <input
+                            type="text"
+                            v-model="param.defaultValue"
+                            placeholder="Необязательно"
+                            class="vintage-border"
+                        >
+                        <input
+                            type="text"
+                            v-model="param.description"
+                            placeholder="Описание параметра"
+                            class="vintage-border"
+                        >
+                        <button
+                            @click="removeParameter(index)"
+                            class="btn-remove"
+                            :disabled="taskData.parameters.length === 1"
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <button @click="addParameter" class="btn-outline btn-sm">
+                        <span class="btn-icon">+</span>
+                        Добавить параметр
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="return-type">
+                      <span class="label-icon">↩️</span>
+                      Тип возвращаемого значения
+                    </label>
+                    <div class="input-container vintage-border">
+                      <select id="return-type" v-model="taskData.returnType">
+                        <option value="void">void (нет возврата)</option>
+                        <option v-for="type in getAvailableTypes()" :key="type" :value="type">
+                          {{ type }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section retro-card">
+                  <h3>📖 Документация и контракты</h3>
+
+                  <div class="form-group">
+                    <label for="function-description">
+                      <span class="label-icon">📄</span>
+                      Описание функции
+                    </label>
+                    <div class="input-container vintage-border">
+                      <textarea
+                          id="function-description"
+                          v-model="taskData.functionDescription"
+                          rows="4"
+                          placeholder="Что делает эта функция? Какие данные обрабатывает? Что возвращает?"
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>
+                      <span class="label-icon">🔒</span>
+                      Предусловия (Pre-conditions)
+                    </label>
+                    <div class="conditions-list vintage-border">
+                      <div
+                          v-for="(condition, index) in taskData.preConditions"
+                          :key="index"
+                          class="condition-item"
+                      >
+                        <input
+                            type="text"
+                            v-model="condition.text"
+                            placeholder="Например: массив не должен быть пустым"
+                            class="vintage-border"
+                        >
+                        <button @click="removePreCondition(index)" class="btn-remove">×</button>
+                      </div>
+                      <button @click="addPreCondition" class="btn-outline btn-sm">
+                        <span class="btn-icon">+</span>
+                        Добавить условие
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>
+                      <span class="label-icon">✅</span>
+                      Постусловия (Post-conditions)
+                    </label>
+                    <div class="conditions-list vintage-border">
+                      <div
+                          v-for="(condition, index) in taskData.postConditions"
+                          :key="index"
+                          class="condition-item"
+                      >
+                        <input
+                            type="text"
+                            v-model="condition.text"
+                            placeholder="Например: результат должен быть положительным числом"
+                            class="vintage-border"
+                        >
+                        <button @click="removePostCondition(index)" class="btn-remove">×</button>
+                      </div>
+                      <button @click="addPostCondition" class="btn-outline btn-sm">
+                        <span class="btn-icon">+</span>
+                        Добавить условие
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="time-complexity">
+                      <span class="label-icon">⏱️</span>
+                      Ожидаемая сложность
+                    </label>
+                    <div class="input-container vintage-border">
+                      <select id="time-complexity" v-model="taskData.timeComplexity">
+                        <option value="">Не указано</option>
+                        <option value="O(1)">O(1) - Константная</option>
+                        <option value="O(log n)">O(log n) - Логарифмическая</option>
+                        <option value="O(n)">O(n) - Линейная</option>
+                        <option value="O(n log n)">O(n log n) - Линеарифметическая</option>
+                        <option value="O(n²)">O(n²) - Квадратичная</option>
+                        <option value="O(2^n)">O(2^n) - Экспоненциальная</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Предпросмотр сигнатуры -->
+              <div class="preview-section retro-card">
+                <h3>
+                  <span class="preview-icon">👁️</span>
+                  Предпросмотр сигнатуры
+                </h3>
+                <div class="code-preview vintage-border">
+                  <pre><code>{{ generateFunctionSignature() }}</code></pre>
+                </div>
+                <div class="hint">
+                  <span class="hint-icon">💡</span>
+                  Эта сигнатура будет автоматически подставлена в шаблон кода
+                </div>
+              </div>
+            </div>
+
+            <!-- Шаг 3: Конфигурация окружения -->
+            <div v-if="currentStep === 3" class="step-content">
+              <div class="step-header">
+                <h2>
+                  <span class="step-icon">⚙️</span>
+                  Конфигурация окружения
+                </h2>
+                <p>Выберите язык программирования, настройте окружение и необходимые зависимости</p>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-section retro-card">
+                  <h3>💻 Язык программирования</h3>
+
+                  <div class="form-group">
+                    <label for="language-select" class="required">
+                      <span class="label-icon">🌐</span>
+                      Основной язык
+                    </label>
+                    <div class="languages-grid">
+                      <label
+                          v-for="lang in availableLanguages"
+                          :key="lang.id"
+                          :class="['language-option vintage-border', { 'selected': taskData.language === lang.id }]"
+                      >
+                        <input
+                            type="radio"
+                            v-model="taskData.language"
+                            :value="lang.id"
+                            hidden
+                        >
+                        <div class="lang-icon">{{ lang.icon }}</div>
+                        <div class="lang-info">
+                          <strong>{{ lang.name }}</strong>
+                          <span>{{ lang.version }}</span>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group" v-if="taskData.language">
+                    <label for="code-template">
+                      <span class="label-icon">📝</span>
+                      Шаблон кода
+                    </label>
+                    <div class="input-container vintage-border">
+                      <textarea
+                          id="code-template"
+                          v-model="taskData.codeTemplate"
+                          rows="8"
+                          placeholder="Базовый шаблон кода, который увидят студенты..."
+                      ></textarea>
+                    </div>
+                    <div class="hint">
+                      <span class="hint-icon">💡</span>
+                      Используйте <code>&#123;&#123;function_signature&#125;&#125;</code> для автоматической вставки сигнатуры функции
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section retro-card">
+                  <h3>📚 Библиотеки и зависимости</h3>
+
+                  <div class="form-group">
+                    <label>
+                      <span class="label-icon">🔍</span>
+                      Доступные библиотеки
+                    </label>
+                    <div class="libraries-panel vintage-border">
+                      <div class="libraries-search">
+                        <input
+                            type="text"
+                            v-model="librarySearch"
+                            placeholder="Поиск библиотек..."
+                            class="vintage-border"
+                        >
+                      </div>
+                      <div class="libraries-list">
+                        <div
+                            v-for="lib in filteredLibraries"
+                            :key="lib.id"
+                            :class="['library-item vintage-border', { 'selected': isLibrarySelected(lib.id) }]"
+                            @click="toggleLibrary(lib.id)"
+                        >
+                          <div class="lib-info">
+                            <strong>{{ lib.name }}</strong>
+                            <span>{{ lib.version }}</span>
+                            <p class="lib-description">{{ lib.description }}</p>
+                          </div>
+                          <div class="lib-compatibility" :class="lib.compatibility">
+                            {{ lib.compatibility === 'full' ? '✓ Совместима' : '⚠ Ограниченно' }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group" v-if="taskData.libraries.length > 0">
+                    <label>
+                      <span class="label-icon">✅</span>
+                      Выбранные библиотеки
+                    </label>
+                    <div class="selected-libraries">
+                      <div
+                          v-for="libId in taskData.libraries"
+                          :key="libId"
+                          class="selected-library vintage-border"
+                      >
+                        <span>{{ getLibraryName(libId) }}</span>
+                        <button @click="toggleLibrary(libId)" class="btn-remove">×</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Настройки выполнения -->
+              <div class="form-section retro-card">
+                <h3>⚡ Настройки выполнения</h3>
+                <div class="execution-settings">
+                  <div class="form-group">
+                    <label for="time-limit">
+                      <span class="label-icon">⏰</span>
+                      Лимит времени (секунды)
+                    </label>
+                    <div class="input-container vintage-border">
+                      <input
+                          type="number"
+                          id="time-limit"
+                          v-model.number="taskData.timeLimit"
+                          min="1"
+                          max="30"
+                      >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="memory-limit">
+                      <span class="label-icon">💾</span>
+                      Лимит памяти (МБ)
+                    </label>
+                    <div class="input-container vintage-border">
+                      <input
+                          type="number"
+                          id="memory-limit"
+                          v-model.number="taskData.memoryLimit"
+                          min="16"
+                          max="1024"
+                      >
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="output-limit">
+                      <span class="label-icon">📤</span>
+                      Лимит вывода (КБ)
+                    </label>
+                    <div class="input-container vintage-border">
+                      <input
+                          type="number"
+                          id="output-limit"
+                          v-model.number="taskData.outputLimit"
+                          min="1"
+                          max="1024"
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Шаг 4: Точка входа и примеры -->
+            <div v-if="currentStep === 4" class="step-content">
+              <div class="step-header">
+                <h2>
+                  <span class="step-icon">🚀</span>
+                  Точка входа и примеры использования
+                </h2>
+                <p>Определите, как будет вызываться функция и какие примеры показывать студентам</p>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-section retro-card">
+                  <h3>🎯 Точка входа (main)</h3>
+
+                  <div class="form-group">
+                    <label for="main-template">
+                      <span class="label-icon">📝</span>
+                      Шаблон main функции
+                    </label>
+                    <div class="input-container vintage-border">
+                      <textarea
+                          id="main-template"
+                          v-model="taskData.mainTemplate"
+                          rows="10"
+                          placeholder="Код, который будет выполняться при запуске программы..."
+                      ></textarea>
+                    </div>
+                    <div class="hint">
+                      <span class="hint-icon">💡</span>
+                      Используйте <code>&#123;&#123;function_call&#125;&#125;</code> для вызова студенческой функции
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="input-format">
+                      <span class="label-icon">📥</span>
+                      Формат входных данных
+                    </label>
+                    <div class="input-container vintage-border">
+                      <textarea
+                          id="input-format"
+                          v-model="taskData.inputFormat"
+                          rows="3"
+                          placeholder="Опишите формат входных данных..."
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="output-format">
+                      <span class="label-icon">📤</span>
+                      Формат выходных данных
+                    </label>
+                    <div class="input-container vintage-border">
+                      <textarea
+                          id="output-format"
+                          v-model="taskData.outputFormat"
+                          rows="3"
+                          placeholder="Опишите формат выходных данных..."
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section retro-card">
+                  <h3>📖 Примеры использования</h3>
+
+                  <div class="examples-container vintage-border">
+                    <div
+                        v-for="(example, index) in taskData.examples"
+                        :key="index"
+                        class="example-item retro-card"
+                    >
+                      <div class="example-header">
+                        <h4>Пример {{ index + 1 }}</h4>
+                        <button @click="removeExample(index)" class="btn-remove">Удалить</button>
+                      </div>
+
+                      <div class="example-content">
+                        <div class="form-group">
+                          <label>Описание примера</label>
+                          <div class="input-container vintage-border">
+                            <input
+                                type="text"
+                                v-model="example.description"
+                                placeholder="Краткое описание этого примера"
+                            >
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Входные данные</label>
+                          <div class="input-container vintage-border">
+                            <textarea
+                                v-model="example.input"
+                                rows="3"
+                                placeholder="Входные данные для примера"
+                            ></textarea>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Ожидаемый вывод</label>
+                          <div class="input-container vintage-border">
+                            <textarea
+                                v-model="example.output"
+                                rows="3"
+                                placeholder="Ожидаемый результат"
+                            ></textarea>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="checkbox-label">
+                            <input
+                                type="checkbox"
+                                v-model="example.isPublic"
+                            >
+                            Показывать студентам
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button @click="addExample" class="btn-outline">
+                      <span class="btn-icon">+</span>
+                      Добавить пример
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Шаг 5: Тестирование -->
+            <div v-if="currentStep === 5" class="step-content">
+              <div class="step-header">
+                <h2>
+                  <span class="step-icon">✅</span>
+                  Система тестирования
+                </h2>
+                <p>Добавьте тесты для автоматической проверки решений студентов</p>
+              </div>
+
+              <div class="tests-management">
+                <div class="tests-header">
+                  <h3>🧪 Тестовые случаи</h3>
+                  <div class="tests-actions">
+                    <button @click="addTest" class="btn-primary">
+                      <span class="btn-icon">+</span>
+                      Новый тест
+                    </button>
+                    <button @click="importTests" class="btn-outline">
+                      <span class="btn-icon">📥</span>
+                      Импорт тестов
+                    </button>
+                  </div>
+                </div>
+
+                <div class="tests-list">
+                  <div
+                      v-for="(test, index) in taskData.tests"
+                      :key="index"
+                      :class="['test-case retro-card', { 'public': test.isPublic }]"
                   >
-                    <path d="M12 6v6l4 2"></path>
-                    <circle r="10" cx="12" cy="12"></circle>
-                  </g>
-                </svg>
-                <span>
-                  История изменений
-                  <span v-html="rawz1d9"></span>
-                </span>
-              </h3>
-              <div class="timeline-entry">
-                <span class="entry-time">15:42</span>
-                <span class="entry-text">Добавлена библиотека NumPy v1.23.0</span>
+                    <div class="test-header">
+                      <div class="test-info">
+                        <h4>Тест {{ index + 1 }}</h4>
+                        <div class="test-meta">
+                          <span class="test-visibility">
+                            {{ test.isPublic ? '👁️ Публичный' : '👻 Скрытый' }}
+                          </span>
+                          <span class="test-weight">⚖️ Вес: {{ test.weight }}</span>
+                        </div>
+                      </div>
+                      <div class="test-actions">
+                        <button @click="toggleTestVisibility(index)" class="btn-sm btn-outline">
+                          {{ test.isPublic ? 'Скрыть' : 'Показать' }}
+                        </button>
+                        <button @click="removeTest(index)" class="btn-remove">
+                          Удалить
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="test-content">
+                      <div class="test-io">
+                        <div class="io-section">
+                          <label>📥 Входные данные</label>
+                          <div class="input-container vintage-border">
+                            <textarea
+                                v-model="test.input"
+                                rows="4"
+                                placeholder="Входные данные для теста"
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div class="io-section">
+                          <label>📤 Ожидаемый вывод</label>
+                          <div class="input-container vintage-border">
+                            <textarea
+                                v-model="test.expectedOutput"
+                                rows="4"
+                                placeholder="Ожидаемый результат"
+                            ></textarea>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="test-settings">
+                        <div class="form-group">
+                          <label>⚖️ Вес теста</label>
+                          <div class="input-container">
+                            <input
+                                type="range"
+                                v-model.number="test.weight"
+                                min="1"
+                                max="10"
+                            >
+                            <span>{{ test.weight }}</span>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>🔍 Тип проверки</label>
+                          <div class="input-container vintage-border">
+                            <select v-model="test.checkType">
+                              <option value="exact">Точное совпадение</option>
+                              <option value="contains">Содержит текст</option>
+                              <option value="regex">Регулярное выражение</option>
+                              <option value="custom">Пользовательская проверка</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="form-group" v-if="test.checkType === 'custom'">
+                          <label>💻 Код проверки</label>
+                          <div class="input-container vintage-border">
+                            <textarea
+                                v-model="test.customCheck"
+                                rows="3"
+                                placeholder="Код для пользовательской проверки"
+                            ></textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="timeline-entry">
-                <span class="entry-time">15:38</span>
-                <span class="entry-text">Изменён язык на Python 3.10</span>
+
+              <!-- Настройки тестирования -->
+              <div class="testing-settings retro-card">
+                <h3>⚙️ Настройки тестирования</h3>
+                <div class="settings-grid">
+                  <div class="form-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" v-model="taskData.autoGrade">
+                      🤖 Автоматическая оценка
+                    </label>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" v-model="taskData.showDetailedErrors">
+                      🔍 Показывать детальные ошибки
+                    </label>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" v-model="taskData.allowCustomTests">
+                      🧪 Разрешить пользовательские тесты
+                    </label>
+                  </div>
+                </div>
               </div>
-              <div class="timeline-entry">
-                <span class="entry-time">15:35</span>
-                <span class="entry-text">Создан новый профиль окружения</span>
+            </div>
+
+            <!-- Навигация -->
+            <div class="wizard-navigation">
+              <div class="nav-left">
+                <button
+                    v-if="currentStep > 1"
+                    @click="previousStep"
+                    class="btn-outline"
+                >
+                  <span class="btn-icon">←</span>
+                  Назад
+                </button>
+              </div>
+
+              <div class="nav-center">
+                <div class="step-info">
+                  <span class="step-current">{{ currentStep }}</span>
+                  <span class="step-separator">/</span>
+                  <span class="step-total">{{ steps.length }}</span>
+                </div>
+              </div>
+
+              <div class="nav-right">
+                <button
+                    v-if="currentStep < steps.length"
+                    @click="validateAndNext"
+                    class="btn-primary"
+                    :disabled="!canProceed"
+                >
+                  Продолжить
+                  <span class="btn-icon">→</span>
+                </button>
+                <button
+                    v-else
+                    @click="saveTask"
+                    class="btn-accent"
+                    :disabled="!canSave"
+                >
+                  <span class="btn-icon">💾</span>
+                  Сохранить задачу
+                </button>
+
+                <button @click="saveDraft" class="btn-text">
+                  <span class="btn-icon">📄</span>
+                  Черновик
+                </button>
               </div>
             </div>
           </main>
         </div>
       </div>
     </section>
-    <section id="docs-section" role="region" aria-labelledby="docs-title">
-      <div class="docs-container">
-        <div class="docs-panel">
-          <div class="docs-primary">
-            <h2 id="docs-title" class="section-title">
-              Определение сигнатуры функции
-              <span v-html="raw5lxg"></span>
-            </h2>
-            <div class="docs-block">
-              <h3 class="docs-subtitle">Имя функции и параметры</h3>
-              <p class="section-content">
-                Задайте имя функции и список параметров — кратко, как запись в
-                старой тетради: типы, порядок и описание каждого аргумента. Это
-                поможет студентам понять контракт задачи мгновенно и без лишней
-                путаницы.
-                <span v-html="raw86zo"></span>
-              </p>
-              <pre
-                class="docs-code"
-              ><span>def calculate_result(input_data: list, threshold: int) -&gt; dict:
-      &quot;&quot;&quot;
-      Обрабатывает входные данные с учётом порога
-      
-      Параметры:
-          input_data: список числовых значений для обработки
-          threshold: минимальное значение для фильтрации
-      
-      Возвращает:
-          словарь с результатами обработки
-      &quot;&quot;&quot;
-      pass</span></pre>
-            </div>
-            <div class="docs-block">
-              <h3 class="docs-subtitle">Тип возвращаемого значения</h3>
-              <div class="return-badge"><span>Возвращает: dict</span></div>
-              <p class="section-content">
-                Выберите точный тип результата: целое, строка, массив или сложная
-                структура. Укажите поведение при ошибках и случаи, когда
-                возвращается значение по умолчанию.
-                <span v-html="raw56uv"></span>
-              </p>
-            </div>
-            <div class="docs-block">
-              <h3 class="docs-subtitle">Вызов из main</h3>
-              <p class="section-content">
-                Опишите пример вызова функции в теле main: создание входных
-                данных, обработка результата и вывод.
-                <span v-html="rawn4bc"></span>
-              </p>
-              <pre class="docs-code"><span>if __name__ == &quot;__main__&quot;:
-      # Чтение входных данных
-      data = [10, 25, 30, 5, 15]
-      threshold = 12
-      
-      # Вызов пользовательской функции
-      result = calculate_result(data, threshold)
-      
-      # Вывод результата
-      print(f&quot;Обработано: &#123;result&#125;&quot;)</span></pre>
-            </div>
-            <div class="docs-block">
-              <h3 class="docs-subtitle">Примеры и граничные случаи</h3>
-              <p class="section-content">
-                Добавьте 2–3 кратких тестовых примера с ожидаемым выводом, включая
-                хотя бы один граничный случай.
-                <span v-html="rawct1j"></span>
-              </p>
-              <ul class="example-list">
-                <li>
-                  <strong>Пример 1:</strong>
-                  <span>
-                    input=[1,2,3], threshold=2 → &#123;&apos;filtered&apos;:
-                    [2,3], &apos;count&apos;: 2&#125;
-                    <span v-html="rawnlo0"></span>
-                  </span>
-                </li>
-                <li>
-                  <strong>Пример 2:</strong>
-                  <span>
-                    input=[], threshold=0 → &#123;&apos;filtered&apos;: [],
-                    &apos;count&apos;: 0&#125;
-                    <span v-html="rawed06"></span>
-                  </span>
-                </li>
-                <li>
-                  <strong>Граничный:</strong>
-                  <span>
-                    input=[100], threshold=100 → &#123;&apos;filtered&apos;:
-                    [100], &apos;count&apos;: 1&#125;
-                    <span v-html="rawc6x4"></span>
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <aside class="docs-side">
-            <div class="side-card">
-              <h4 class="side-title">Контракты</h4>
-              <ul class="contract-list">
-                <li><span>Список не может быть None</span></li>
-                <li><span>Threshold ≥ 0</span></li>
-                <li><span>Возвращает пустой dict при ошибке</span></li>
-              </ul>
-            </div>
-            <div class="side-card">
-              <h4 class="side-title">Готовые пресеты</h4>
-              <button class="preset-btn btn-outline btn">
-                Сортировка массива
-              </button>
-              <button class="preset-btn btn-outline btn">Поиск элемента</button>
-              <button class="preset-btn btn-outline btn">Обработка строк</button>
-            </div>
-            <div class="side-card">
-              <h4 class="side-title">Статистика использования</h4>
-              <div class="stat-item">
-                <span class="stat-label">Запусков:</span>
-                <span class="stat-value">1,920</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Успешность:</span>
-                <span class="stat-value">87%</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Среднее время:</span>
-                <span class="stat-value">22 мин</span>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-    <section
-      id="documentation-section"
-      role="region"
-      aria-labelledby="documentation-title"
-    >
-      <div class="documentation-container">
-        <div class="doc-hero">
-          <div class="doc-editorial">
-            <h2 id="documentation-title" class="section-title">
-              Документация — Шаблон main и вызов функции
-              <span v-html="rawjrvj"></span>
-            </h2>
-            <p class="section-subtitle">
-              Кратко и душевно: этот блок объясняет, как подготовить главный
-              исполняемый файл (main) и корректно вызывать функцию, которую
-              напишет студент. Стиль — в духе классической мастерской: ясно,
-              аккуратно, с заботой о будущем разработчике.
-              <span v-html="rawic51"></span>
-            </p>
-            <div class="doc-section">
-              <h3 class="doc-heading">Структура шаблона main</h3>
-              <ol class="doc-list">
-                <li>
-                  <strong>Заголовок и комментарии:</strong>
-                  <span>
-                    начните с краткого описания задачи, авторства и ожидаемого
-                    поведения программы. Нота ретро: используйте вёрстку
-                    комментариев как в старых печатных руководствах — читабельно и
-                    элегантно.
-                    <span v-html="raww2o8"></span>
-                  </span>
-                </li>
-                <li>
-                  <strong>Подключение библиотек:</strong>
-                  <span>
-                    перечислите стандартные и дополнительные библиотеки в
-                    отдельном блоке, чтобы студент видел зависимости сразу.
-                    <span v-html="rawvvxq"></span>
-                  </span>
-                </li>
-                <li>
-                  <strong>Определение пользовательской функции:</strong>
-                  <span>
-                    помещайте сигнатуру и минимальный комментарий по контракту
-                    (входы/выходы/ограничения).
-                    <span v-html="raw8i48"></span>
-                  </span>
-                </li>
-                <li>
-                  <strong>main:</strong>
-                  <span>
-                    в main — минимальная логика: чтение входных данных, вызов
-                    пользовательской функции, вывод результата.
-                    <span v-html="raw2cdr"></span>
-                  </span>
-                </li>
-              </ol>
-              <pre class="doc-code"><span># -*- coding: utf-8 -*-
-  &quot;&quot;&quot;
-  Задача: Обработка массива данных
-  Автор: Преподаватель курса
-  Дата: 2025
-  &quot;&quot;&quot;
-  
-  import sys
-  from typing import List, Dict
-  
-  def process_array(data: List[int]) -&gt; Dict[str, int]:
-      &quot;&quot;&quot;
-      Обрабатывает массив целых чисел
-      Входные данные: список целых чисел
-      Выходные данные: словарь со статистикой
-      &quot;&quot;&quot;
-      # Реализация студента
-      pass
-  
-  def main():
-      # Чтение данных
-      n = int(input())
-      data = list(map(int, input().split()))
-      
-      # Вызов функции
-      result = process_array(data)
-      
-      # Вывод результата
-      print(f&quot;Sum: &#123;result[&apos;sum&apos;]&#125;&quot;)
-      print(f&quot;Count: &#123;result[&apos;count&apos;]&#125;&quot;)
-  
-  if __name__ == &quot;__main__&quot;:
-      main()</span></pre>
-            </div>
-            <div class="doc-section">
-              <h3 class="doc-heading">
-                Рекомендации по оформлению и совместимости
-                <span v-html="rawtpvq"></span>
-              </h3>
-              <div class="recommendation-grid">
-                <div class="rec-card">
-                  <h4>Язык</h4>
-                  <p>
-                    Придерживайтесь выбранного языка и его соглашений по стилю
-                    кодирования. Цвет ретро-типографии в комментариях — спокойный
-                    и аккуратный.
-                    <span v-html="rawqzb9"></span>
-                  </p>
-                </div>
-                <div class="rec-card">
-                  <h4>Граничные случаи</h4>
-                  <p>
-                    В комментариях к функции укажите предполагаемые крайние
-                    значения и сложность — это помогает оценивать решения
-                    последовательнее.
-                    <span v-html="rawz79d"></span>
-                  </p>
-                </div>
-                <div class="rec-card">
-                  <h4>IO форматы</h4>
-                  <p>
-                    Явно опишите входной и выходной формат (разделители, порядок),
-                    чтобы исключить неоднозначности при автоматических тестах.
-                    <span v-html="raw84zb"></span>
-                  </p>
-                </div>
-                <div class="rec-card">
-                  <h4>Изоляция логики</h4>
-                  <p>
-                    Избегайте побочных эффектов в функции — весь ввод/вывод должен
-                    происходить в main, а функция возвращает результат.
-                    <span v-html="rawd929"></span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="vintage-note">
-              <svg
-                width="24"
-                xmlns="http://www.w3.org/2000/svg"
-                height="24"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </svg>
-              <p>
-                «Пишите как мастер: аккуратно, с пометками, чтобы через годы
-                другой разработчик понял задумку. Мы собираем не только решения —
-                мы сохраняем ремесло.»
-                <span v-html="rawvx5k"></span>
-              </p>
-            </div>
-          </div>
-          <aside class="doc-examples">
-            <div class="example-card">
-              <h4>Быстрый старт</h4>
-              <p>Используйте готовые шаблоны для быстрого начала работы</p>
-              <button class="btn-primary btn">Выбрать шаблон</button>
-            </div>
-            <div class="example-card">
-              <h4>Тестирование</h4>
-              <p>Добавьте тест-кейсы для проверки корректности</p>
-              <button class="btn-outline btn">Добавить тесты</button>
-            </div>
-            <div class="example-card retro-callout">
-              <svg
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
-                height="20"
-                viewBox="0 0 24 24"
-              >
-                <g
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M3.85 8.62a4 4 0 0 1 4.78-4.77a4 4 0 0 1 6.74 0a4 4 0 0 1 4.78 4.78a4 4 0 0 1 0 6.74a4 4 0 0 1-4.77 4.78a4 4 0 0 1-6.75 0a4 4 0 0 1-4.78-4.77a4 4 0 0 1 0-6.76"
-                  ></path>
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"></path>
-                </g>
-              </svg>
-              <p>
-                <span class="task-template-builder-text182">Совет мастера:</span>
-                <span>
-                  Начните с простого примера, протестируйте его, затем добавляйте
-                  сложность постепенно.
-                  <span v-html="rawvpss"></span>
-                </span>
-              </p>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-    <section
-      id="dashboard-section"
-      role="region"
-      aria-labelledby="dashboard-title"
-    >
-      <div class="dashboard-container">
-        <div class="dashboard">
-          <div class="preview-column">
-            <h2 id="dashboard-title" class="section-title">
-              Живой предпросмотр шаблона задачи
-              <span v-html="rawu0el"></span>
-            </h2>
-            <div class="preview-panel">
-              <div class="panel-badge">
-                <svg
-                  width="18"
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="18"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="m16 18l6-6l-6-6M8 6l-6 6l6 6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></path>
-                </svg>
-                <span>Python 3.10</span>
-              </div>
-              <h3 class="preview-title">Обработка массива данных</h3>
-              <pre class="preview-code"><span># main.py
-  import sys
-  from typing import List, Dict
-  
-  def process_array(data: List[int]) -&gt; Dict[str, int]:
-      &quot;&quot;&quot;
-      Обрабатывает массив целых чисел
-      Возвращает статистику обработки
-      &quot;&quot;&quot;
-      # Ваша реализация здесь
-      pass
-  
-  if __name__ == &quot;__main__&quot;:
-      # Чтение входных данных
-      n = int(input())
-      data = list(map(int, input().split()))
-      
-      # Вызов функции
-      result = process_array(data)
-      
-      # Вывод результата  
-      print(f&quot;Sum: &#123;result[&apos;sum&apos;]&#125;&quot;)
-      print(f&quot;Count: &#123;result[&apos;count&apos;]&#125;&quot;)</span></pre>
-            </div>
-            <div class="preview-panel">
-              <h3 class="preview-subtitle">Пример использования (main)</h3>
-              <div class="example-io">
-                <div class="io-block">
-                  <strong>Ввод:</strong>
-                  <pre><div class="task-template-builder-io-block2"><strong>Вывод:</strong><pre><div class="task-template-builder-action-row"><button class="btn-primary btn"><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
-  ></path><path
-    d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7M7 3v4a1 1 0 0 0 1 1h7"
-  ></path></g></svg><span> Сохранить шаблон <span v-html="raw5b95"></span></span></button><button
-    class="btn-accent btn"
-  ><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path d="M12 15V3m9 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path
-    d="m7 10l5 5l5-5"
-  ></path></g></svg><span> Экспорт в задачу <span v-html="rawvwe9"></span></span></button><button
-    class="btn-outline btn"
-  ><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><path
-    d="M20 6L9 17l-5-5"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg><span> Предпросмотр тестов <span v-html="rawfyli"></span></span></button></div><aside
-    class="task-template-builder-rail-column"
-  ><div class="rail-card"><h4 class="rail-title">Статус совместимости</h4><div class="status-badges"><span class="status-ready status-badge"><svg
-    width="14"
-    xmlns="http://www.w3.org/2000/svg"
-    height="14"
-    viewBox="0 0 24 24"
-  ><path
-    d="M20 6L9 17l-5-5"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg><span> Готово к оцениванию <span v-html="rawduyo"></span></span></span><span
-    class="status-deps status-badge"
-  ><svg
-    width="14"
-    xmlns="http://www.w3.org/2000/svg"
-    height="14"
-    viewBox="0 0 24 24"
-  ><path
-    d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg><span> 2 библиотеки <span v-html="rawh979"></span></span></span></div></div><div
-    class="rail-card"
-  ><h4 class="rail-title">Требования</h4><ul class="requirements-list"><li><span>Время: ≤ 2 секунды</span></li><li><span>Память: ≤ 256 МБ</span></li><li><span>Ввод: stdin</span></li><li><span>Вывод: stdout</span></li></ul></div><div
-    class="rail-card"
-  ><h4 class="rail-title"><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3.128a4 4 0 0 1 0 7.744M22 21v-2a4 4 0 0 0-3-3.87"
-  ></path><circle
-    r="4"
-    cx="9"
-    cy="7"
-  ></circle></g></svg><span> Данные студентов <span v-html="rawq06z"></span></span></h4><div
-    class="student-stats"
-  ><div class="stat-row"><span>Среднее время:</span><strong>22 мин</strong></div><div
-    class="stat-row"
-  ><span>Успешных запусков:</span><strong>87%</strong></div><div
-    class="stat-row"
-  ><span>Типичные ошибки:</span><strong>IndexError (12%)</strong></div></div></div><div
-    class="rail-card history-rail"
-  ><h4 class="rail-title"><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path d="M12 6v6l4 2"></path><circle r="10" cx="12" cy="12"></circle></g></svg><span> История изменений <span v-html="raw9l1k"></span></span></h4><div
-    class="history-list"
-  ><div class="history-item"><span class="history-time">16:24</span><p
-    class="history-text"
-  >Обновлена сигнатура функции</p><span
-    class="history-author"
-  >Иван С.</span></div><div
-    class="history-item"
-  ><span class="history-time">15:42</span><p
-    class="history-text"
-  >Добавлена библиотека NumPy</p><span
-    class="history-author"
-  >Анна П.</span></div><div
-    class="history-item"
-  ><span class="history-time">14:18</span><p class="history-text">Создан шаблон</p><span class="history-author">Анна П.</span></div></div></div><div
-    class="author-signature"
-  ><p><span class="task-template-builder-text208">Автор:</span><span> Анна П. <span v-html="rawzwnb"></span></span></p><p><span class="task-template-builder-text211">Уровень:</span><span> Средний <span v-html="rawximm"></span></span></p></div></aside><section
-    id="stats-section"
-    role="region"
-    aria-labelledby="stats-title"
-  ><div class="stats-container"><div class="stats-panel"><div class="stats-left"><h2 id="stats-title" class="section-title">Статистика шаблонов</h2><p
-    class="stats-subtitle"
-  >Винтажный отчет о современных успехах</p><div
-    class="key-metrics"
-  ><div class="metric-badge"><span class="metric-label">Всего шаблонов</span><span class="metric-value">128</span></div><div
-    class="metric-badge"
-  ><span class="metric-label">Использований за месяц</span><span
-    class="metric-value"
-  >3,482</span></div></div><p
-    class="stats-interpretation"
-  > Эти данные подсказывают, какие языки и библиотеки востребованы в
-            реальных занятиях, где требуется упрощение или дополнительная
-            документация, и какие шаблоны стоит продвигать при наборе на курсы. <span
-    v-html="rawsvcp"
-  ></span></p></div><div
-    class="stats-center"
-  ><div class="stat-card"><h3 class="card-title"><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m16 18l6-6l-6-6M8 6l-6 6l6 6"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg><span> Топ языков по популярности <span v-html="rawt7t7"></span></span></h3><ul
-    class="language-list"
-  ><li><span class="lang-name">Python</span><span
-    class="lang-stat"
-  >54 шаблона • 1,920 запусков</span></li><li><span class="lang-name">C++</span><span
-    class="lang-stat"
-  >32 шаблона • 890 запусков</span></li><li><span class="lang-name">Java</span><span
-    class="lang-stat"
-  >18 шаблонов • 420 запусков</span></li></ul></div><div
-    class="stat-card"
-  ><h3 class="card-title"><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m16 6l4 14M12 6v14M8 8v12M4 4v16"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg><span> Наиболее добавляемые библиотеки <span v-html="rawmlij"></span></span></h3><ul
-    class="library-list-stats"
-  ><li><span class="lib-name">NumPy</span><span class="lib-count">620 использований</span></li><li><span class="lib-name">STL</span><span class="lib-count">410 использований</span></li><li><span class="lib-name">JUnit</span><span class="lib-count">150 использований</span></li></ul></div></div><div
-    class="stats-right"
-  ><div class="authors-card"><h3 class="card-title"><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3.128a4 4 0 0 1 0 7.744M22 21v-2a4 4 0 0 0-3-3.87"
-  ></path><circle
-    r="4"
-    cx="9"
-    cy="7"
-  ></circle></g></svg><span> Лучшие авторы <span v-html="raw7n0b"></span></span></h3><ul
-    class="authors-list"
-  ><li><span class="author-name">Анна П.</span><span
-    class="author-stat"
-  >26 шаблонов • 4.8/5</span></li><li><span class="author-name">Иван С.</span><span
-    class="author-stat"
-  >18 шаблонов • 4.6/5</span></li></ul></div><div
-    class="activity-card"
-  ><h4 class="card-title"><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path d="M12 6v6l4 2"></path><circle r="10" cx="12" cy="12"></circle></g></svg><span> Активность <span v-html="rawzmwl"></span></span></h4><p
-    class="activity-text"
-  > Пики загрузки в будние дни утром и поздним вечером <span v-html="raws2kh"></span></p><p
-    class="activity-stat"
-  ><span> Среднее время на выполнение: <span v-html="rawq005"></span></span><span
-    class="task-template-builder-text218"
-  >22 минуты</span></p></div><div
-    class="action-group"
-  ><button class="btn-primary btn"><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path d="M12 15V3m9 12v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path
-    d="m7 10l5 5l5-5"
-  ></path></g></svg><span> Экспортировать отчет <span v-html="rawlpjf"></span></span></button><button
-    class="btn-outline btn"
-  ><svg
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
-    height="18"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M16 3.128a4 4 0 0 1 0 7.744M22 21v-2a4 4 0 0 0-3-3.87"
-  ></path><circle
-    r="4"
-    cx="9"
-    cy="7"
-  ></circle></g></svg><span> Показать пользователей <span v-html="rawq0we"></span></span></button></div></div></div></div></section><section
-    id="faq-section"
-    role="region"
-    aria-labelledby="faq-title"
-  ><div class="faq-container"><h2 id="faq-title" class="section-title">Часто задаваемые вопросы</h2><div
-    class="faq-grid"
-  ><div class="faq-cards"><div class="faq-card"><svg
-    width="24"
-    xmlns="http://www.w3.org/2000/svg"
-    height="24"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M3.85 8.62a4 4 0 0 1 4.78-4.77a4 4 0 0 1 6.74 0a4 4 0 0 1 4.78 4.78a4 4 0 0 1 0 6.74a4 4 0 0 1-4.77 4.78a4 4 0 0 1-6.75 0a4 4 0 0 1-4.78-4.77a4 4 0 0 1 0-6.76"
-  ></path><path
-    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"
-  ></path></g></svg><h3>Какие языки поддерживаются?</h3><p> Поддерживаем популярные учебные языки: Python, Java, C++, C#,
-              JavaScript (Node.js). Список регулярно обновляется по мере появления
-              учебных трендов. <span
-    v-html="raw24ro"
-  ></span></p></div><div
-    class="faq-card"
-  ><svg
-    width="24"
-    xmlns="http://www.w3.org/2000/svg"
-    height="24"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M3.85 8.62a4 4 0 0 1 4.78-4.77a4 4 0 0 1 6.74 0a4 4 0 0 1 4.78 4.78a4 4 0 0 1 0 6.74a4 4 0 0 1-4.77 4.78a4 4 0 0 1-6.75 0a4 4 0 0 1-4.78-4.77a4 4 0 0 1 0-6.76"
-  ></path><path
-    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"
-  ></path></g></svg><h3>Можно ли добавить внешние библиотеки?</h3><p> Да. Вы можете подключать стандартные и общедоступные библиотеки,
-              необходимые для учебной задачи. Ограничения применяются: только
-              проверенные пакеты. <span
-    v-html="rawmv7z"
-  ></span></p></div><div
-    class="faq-card"
-  ><svg
-    width="24"
-    xmlns="http://www.w3.org/2000/svg"
-    height="24"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M3.85 8.62a4 4 0 0 1 4.78-4.77a4 4 0 0 1 6.74 0a4 4 0 0 1 4.78 4.78a4 4 0 0 1 0 6.74a4 4 0 0 1-4.77 4.78a4 4 0 0 1-6.75 0a4 4 0 0 1-4.78-4.77a4 4 0 0 1 0-6.76"
-  ></path><path
-    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"
-  ></path></g></svg><h3>Можно ли сохранить и повторно использовать шаблоны?</h3><p> Конечно. Шаблоны сохраняются в личной библиотеке преподавателя и
-              могут копироваться, версионироваться и публиковаться для коллег. <span
-    v-html="rawhjqf"
-  ></span></p></div><div
-    class="faq-card"
-  ><svg
-    width="24"
-    xmlns="http://www.w3.org/2000/svg"
-    height="24"
-    viewBox="0 0 24 24"
-  ><g
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ><path
-    d="M3.85 8.62a4 4 0 0 1 4.78-4.77a4 4 0 0 1 6.74 0a4 4 0 0 1 4.78 4.78a4 4 0 0 1 0 6.74a4 4 0 0 1-4.77 4.78a4 4 0 0 1-6.75 0a4 4 0 0 1-4.78-4.77a4 4 0 0 1 0-6.76"
-  ></path><path
-    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"
-  ></path></g></svg><h3>Есть ли готовые ретро-шаблоны?</h3><p> Да — коллекция «Наследие» содержит премиум-шаблоны в винтажной
-              стилистике документации: аккуратно оформленные сигнатуры,
-              комментарии и тесты. <span
-    v-html="rawoqx2"
-  ></span></p></div></div><div
-    class="faq-accordion"
-  ><details class="accordion-item"><summary role="button" aria-controls="faq-1" aria-expanded="false"><span>Какие существуют ограничения на библиотеки?</span><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m18 15l-6-6l-6 6"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg></summary><div
-    id="faq-1"
-    role="region"
-    aria-labelledby="faq-1-title"
-    class="accordion-content"
-  ><p> Максимум 10 внешних пакетов на шаблон; суммарный объём
-                зависимостей не должен превышать 50 МБ. Запрещены пакеты с
-                исполнением небезопасного кода и пакеты, требующие нестандартных
-                системных привилегий. <span
-    v-html="raw8rpn"
-  ></span></p></div></details><details
-    class="accordion-item"
-  ><summary role="button" aria-controls="faq-2" aria-expanded="false"><span>Как оформлять шаблон функции и её вызов из main?</span><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m18 15l-6-6l-6 6"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg></summary><div
-    id="faq-2"
-    role="region"
-    aria-labelledby="faq-2-title"
-    class="accordion-content"
-  ><p> В форме шаблона предусмотрены поля для сигнатуры функции,
-                комментариев с описанием контрактов и примера вызова в main.
-                Система автоматически генерирует каркас main с подсказками для
-                студентов. <span
-    v-html="rawy18n"
-  ></span></p></div></details><details
-    class="accordion-item"
-  ><summary role="button" aria-controls="faq-3" aria-expanded="false"><span>Как проверяется совместимость шаблона?</span><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m18 15l-6-6l-6 6"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg></summary><div
-    id="faq-3"
-    role="region"
-    aria-labelledby="faq-3-title"
-    class="accordion-content"
-  ><p> Для каждой языковой конфигурации можно указать версию
-                компилятора/интерпретатора. Система выполняет быструю валидацию
-                шаблона в выбранной среде и сообщает о несовместимостях. <span
-    v-html="rawggm7"
-  ></span></p></div></details><details
-    class="accordion-item"
-  ><summary role="button" aria-controls="faq-4" aria-expanded="false"><span>Как обеспечить авторский контроль?</span><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m18 15l-6-6l-6 6"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg></summary><div
-    id="faq-4"
-    role="region"
-    aria-labelledby="faq-4-title"
-    class="accordion-content"
-  ><p> У каждого шаблона можно задать права: личный, доступ коллегам,
-                публичный для курса. История изменений и отметки автора видны в
-                интерфейсе. <span
-    v-html="rawp5us"
-  ></span></p></div></details><details
-    class="accordion-item"
-  ><summary role="button" aria-controls="faq-5" aria-expanded="false"><span>Что делать, если шаблон вызывает ошибки у студентов?</span><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m18 15l-6-6l-6 6"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg></summary><div
-    id="faq-5"
-    role="region"
-    aria-labelledby="faq-5-title"
-    class="accordion-content"
-  ><p> В интерфейсе есть режим просмотра журналов выполнения и
-                рекомендаций. Вы можете включить более подробный вывод ошибок для
-                отладки или ограничить его для экзаменационных условий. <span
-    v-html="rawelng"
-  ></span></p></div></details><details
-    class="accordion-item"
-  ><summary role="button" aria-controls="faq-6" aria-expanded="false"><span>Как работают лимиты по времени и памяти?</span><svg
-    width="20"
-    xmlns="http://www.w3.org/2000/svg"
-    height="20"
-    viewBox="0 0 24 24"
-  ><path
-    d="m18 15l-6-6l-6 6"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  ></path></svg></summary><div
-    id="faq-6"
-    role="region"
-    aria-labelledby="faq-6-title"
-    class="accordion-content"
-  ><p> Преподаватель настраивает таймауты и лимиты памяти для каждой
-                задачи. Рекомендуемые значения подсказаны в ретро-стиле подсказок,
-                опираясь на лучшие образовательные практики. <span
-    v-html="rawq45l"
-  ></span></p></div></details><div
-    class="support-card"
-  ><h3>Поддержка и обратная связь</h3><p> Если вы столкнулись с нестандартной библиотекой или сценарием,
-              команда CodeCraft Template поможет адаптировать среду. Оставьте
-              запрос через панель поддержки — ответ в рабочие часы, как принято у
-              заботливых преподавателей старой школы. <span
-    v-html="raws0n7"
-  ></span></p><button
-    class="btn-primary btn"
-  >Связаться с поддержкой</button></div></div></div></div></section><div
-    class="task-template-builder-container27"
-  ><div class="task-template-builder-container28"><DangerousHTML
-    html="<style>
-          @keyframes revealFade {from {opacity: 0;
-  transform: translateY(8px);}
-  to {opacity: 1;
-  transform: translateY(0);}}@keyframes accordionOpen {from {opacity: 0;
-  transform: translateY(-4px);}
-  to {opacity: 1;
-  transform: translateY(0);}}
-          </style> "
-  ></DangerousHTML></div></div><div
-    class="task-template-builder-container29"
-  ><div class="task-template-builder-container30"><DangerousHTML
-    html="<script defer data-name='task-template-builder'>
-  (function(){
-    // Accordion functionality for FAQ section
-    const accordionItems = document.querySelectorAll('.accordion-item')
-  
-    accordionItems.forEach((item) => {
-      const summary = item.querySelector('summary')
-  
-      summary.addEventListener('click', () => {
-        const isOpen = item.hasAttribute('open')
-        summary.setAttribute('aria-expanded', !isOpen)
-      })
-    })
-  
-    // Chip toggle functionality
-    const chips = document.querySelectorAll('.chip')
-  
-    chips.forEach((chip) => {
-      chip.addEventListener('click', () => {
-        const isPressed = chip.getAttribute('aria-pressed') === 'true'
-        chip.setAttribute('aria-pressed', !isPressed)
-      })
-    })
-  
-    // Reveal animations for timeline entries
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
-    }
-  
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1'
-          entry.target.style.transform = 'translateY(0)'
-        }
-      })
-    }, observerOptions)
-  
-    const timelineEntries = document.querySelectorAll('.timeline-entry')
-    timelineEntries.forEach((entry) => {
-      entry.style.opacity = '0'
-      entry.style.transform = 'translateY(6px)'
-      entry.style.transition = `opacity ${getComputedStyle(
-        document.documentElement
-      ).getPropertyValue('--animation-duration-standard')} ${getComputedStyle(
-        document.documentElement
-      ).getPropertyValue(
-        '--animation-curve-primary'
-      )}, transform ${getComputedStyle(document.documentElement).getPropertyValue(
-        '--animation-duration-standard'
-      )} ${getComputedStyle(document.documentElement).getPropertyValue(
-        '--animation-curve-primary'
-      )}`
-      observer.observe(entry)
-    })
-  
-    // Library card hover effects
-    const libraryCards = document.querySelectorAll('.library-card')
-    libraryCards.forEach((card) => {
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-4px)'
-      })
-  
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0)'
-      })
-    })
-  
-    // CTA button press effect
-    const ctaButtons = document.querySelectorAll(
-      '.cta, .btn-primary, .btn-accent'
-    )
-    ctaButtons.forEach((btn) => {
-      btn.addEventListener('mousedown', () => {
-        btn.style.transform = 'scale(0.98)'
-      })
-  
-      btn.addEventListener('mouseup', () => {
-        btn.style.transform = 'scale(1)'
-      })
-  
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'scale(1)'
-      })
-    })
-  
-    // Step navigation highlight
-    const stepItems = document.querySelectorAll('.step-item')
-    stepItems.forEach((step, index) => {
-      step.addEventListener('click', () => {
-        stepItems.forEach((s) => s.removeAttribute('aria-current'))
-        step.setAttribute('aria-current', 'step')
-      })
-    })
-  })()
-  </script>"
-  ></DangerousHTML></div></div>Sum: 85 Count: 5&lt;/pre &gt;</pre></div>5 10 25 30 5 15&lt;/pre &gt;</pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
     <app-footer></app-footer>
   </div>
 </template>
 
 <script>
 import DangerousHTML from 'dangerous-html/vue'
-
 import AppNavigation from '../components/navigation'
 import AppFooter from '../components/footer'
 
 export default {
   name: 'TaskTemplateBuilder',
-  props: {},
   components: {
     AppNavigation,
     DangerousHTML,
@@ -1942,89 +1078,339 @@ export default {
   },
   data() {
     return {
-      rawvb1s: ' ',
-      rawjkm7: ' ',
-      rawuxah: ' ',
-      raw071s: ' ',
-      raw4vw0: ' ',
-      rawg1ys: ' ',
-      raw7ybv: ' ',
-      raw32jf: ' ',
-      rawzvz0: ' ',
-      rawmzmw: ' ',
-      raw135x: ' ',
-      raw29lq: ' ',
-      raw2hf3: ' ',
-      raw0rvi: ' ',
-      raw4lsj: ' ',
-      rawycll: ' ',
-      rawup19: ' ',
-      raw3jo9: ' ',
-      raw90c8: ' ',
-      raw6fdq: ' ',
-      raw3pqk: ' ',
-      rawsszg: ' ',
-      rawsxyj: ' ',
-      rawz1d9: ' ',
-      raw5lxg: ' ',
-      raw86zo: ' ',
-      raw56uv: ' ',
-      rawn4bc: ' ',
-      rawct1j: ' ',
-      rawnlo0: ' ',
-      rawed06: ' ',
-      rawc6x4: ' ',
-      rawjrvj: ' ',
-      rawic51: ' ',
-      raww2o8: ' ',
-      rawvvxq: ' ',
-      raw8i48: ' ',
-      raw2cdr: ' ',
-      rawtpvq: ' ',
-      rawqzb9: ' ',
-      rawz79d: ' ',
-      raw84zb: ' ',
-      rawd929: ' ',
-      rawvx5k: ' ',
-      rawvpss: ' ',
-      rawu0el: ' ',
-      raw5b95: ' ',
-      rawvwe9: ' ',
-      rawfyli: ' ',
-      rawduyo: ' ',
-      rawh979: ' ',
-      rawq06z: ' ',
-      raw9l1k: ' ',
-      rawzwnb: ' ',
-      rawximm: ' ',
-      rawsvcp: ' ',
-      rawt7t7: ' ',
-      rawmlij: ' ',
-      raw7n0b: ' ',
-      rawzmwl: ' ',
-      raws2kh: ' ',
-      rawq005: ' ',
-      rawlpjf: ' ',
-      rawq0we: ' ',
-      raw24ro: ' ',
-      rawmv7z: ' ',
-      rawhjqf: ' ',
-      rawoqx2: ' ',
-      raw8rpn: ' ',
-      rawy18n: ' ',
-      rawggm7: ' ',
-      rawp5us: ' ',
-      rawelng: ' ',
-      rawq45l: ' ',
-      raws0n7: ' ',
+      currentStep: 1,
+      paramSubmitted: false,
+      librarySearch: '',
+      newTag: '',
+      steps: [
+        { name: 'Основная информация', description: 'Название и описание задачи' },
+        { name: 'Сигнатура функции', description: 'Определение функции и параметров' },
+        { name: 'Конфигурация', description: 'Язык, библиотеки и окружение' },
+        { name: 'Примеры использования', description: 'Точка входа и примеры' },
+        { name: 'Тестирование', description: 'Тесты и проверка решений' }
+      ],
+      taskData: {
+        title: '',
+        description: '',
+        category: '',
+        difficulty: 'medium',
+        tags: [],
+        timeEstimate: 30,
+
+        functionName: '',
+        parameters: [{ name: '', type: 'int', defaultValue: '', description: '' }],
+        returnType: 'void',
+        functionDescription: '',
+        preConditions: [],
+        postConditions: [],
+        timeComplexity: '',
+
+        language: '',
+        codeTemplate: '',
+        libraries: [],
+        timeLimit: 10,
+        memoryLimit: 256,
+        outputLimit: 64,
+
+        mainTemplate: '',
+        inputFormat: '',
+        outputFormat: '',
+        examples: [{
+          description: '',
+          input: '',
+          output: '',
+          isPublic: true
+        }],
+
+        tests: [{
+          input: '',
+          expectedOutput: '',
+          isPublic: true,
+          weight: 5,
+          checkType: 'exact',
+          customCheck: ''
+        }],
+
+        autoGrade: true,
+        showDetailedErrors: false,
+        allowCustomTests: false
+      },
+      difficultyLevels: [
+        { value: 'easy', label: 'Начинающий', icon: '🌱' },
+        { value: 'medium', label: 'Средний', icon: '🎯' },
+        { value: 'hard', label: 'Продвинутый', icon: '🚀' },
+        { value: 'expert', label: 'Эксперт', icon: '🏆' }
+      ],
+      availableLanguages: [
+        { id: 'python', name: 'Python', version: '3.10', icon: '🐍' },
+        { id: 'java', name: 'Java', version: '11', icon: '☕' },
+        { id: 'cpp', name: 'C++', version: '17', icon: '⚡' },
+        { id: 'csharp', name: 'C#', version: '10', icon: '🎵' },
+        { id: 'javascript', name: 'JavaScript', version: 'ES6', icon: '📜' },
+        { id: 'typescript', name: 'TypeScript', version: '4.0', icon: '🔷' },
+        { id: 'go', name: 'Go', version: '1.19', icon: '🐹' },
+        { id: 'rust', name: 'Rust', version: '1.65', icon: '🦀' }
+      ],
+      availableLibraries: [
+        { id: 'numpy', name: 'NumPy', version: '1.23.0', description: 'Библиотека для научных вычислений', compatibility: 'full' },
+        { id: 'pandas', name: 'Pandas', version: '1.5.3', description: 'Инструменты для анализа данных', compatibility: 'full' },
+        { id: 'matplotlib', name: 'Matplotlib', version: '3.7.1', description: 'Библиотека для визуализации', compatibility: 'full' },
+        { id: 'requests', name: 'Requests', version: '2.28.2', description: 'HTTP библиотека для Python', compatibility: 'full' },
+        { id: 'junit', name: 'JUnit', version: '5.9.0', description: 'Фреймворк для тестирования', compatibility: 'full' },
+        { id: 'mockito', name: 'Mockito', version: '4.11.0', description: 'Библиотека для мокирования', compatibility: 'limited' },
+        { id: 'boost', name: 'Boost', version: '1.80.0', description: 'Набор библиотек для C++', compatibility: 'full' },
+        { id: 'catch2', name: 'Catch2', version: '3.3.0', description: 'Фреймворк для тестирования C++', compatibility: 'full' }
+      ]
+    }
+  },
+  computed: {
+    canProceed() {
+      switch (this.currentStep) {
+        case 1:
+          return this.taskData.title.trim() && this.taskData.description.trim()
+        case 2:
+          return this.taskData.functionName.trim() &&
+              this.taskData.parameters.every(p => p.name.trim())
+        case 3:
+          return this.taskData.language
+        case 4:
+          return this.taskData.mainTemplate.trim()
+        default:
+          return true
+      }
+    },
+    canSave() {
+      return this.canProceed && this.taskData.tests.some(t => t.input.trim() && t.expectedOutput.trim())
+    },
+    filteredLibraries() {
+      if (!this.librarySearch) return this.availableLibraries
+      return this.availableLibraries.filter(lib =>
+          lib.name.toLowerCase().includes(this.librarySearch.toLowerCase()) ||
+          lib.description.toLowerCase().includes(this.librarySearch.toLowerCase())
+      )
+    }
+  },
+  methods: {
+    goToStep(step) {
+      if (step <= this.currentStep) {
+        this.currentStep = step
+      }
+    },
+
+    nextStep() {
+      if (this.currentStep < this.steps.length) {
+        this.currentStep++
+      }
+    },
+
+    previousStep() {
+      if (this.currentStep > 1) {
+        this.currentStep--
+      }
+    },
+
+    validateAndNext() {
+      this.paramSubmitted = true
+      if (this.canProceed) {
+        this.nextStep()
+      }
+    },
+
+    addParameter() {
+      this.taskData.parameters.push({
+        name: '',
+        type: 'int',
+        defaultValue: '',
+        description: ''
+      })
+    },
+
+    removeParameter(index) {
+      if (this.taskData.parameters.length > 1) {
+        this.taskData.parameters.splice(index, 1)
+      }
+    },
+
+    addPreCondition() {
+      this.taskData.preConditions.push({ text: '' })
+    },
+
+    removePreCondition(index) {
+      this.taskData.preConditions.splice(index, 1)
+    },
+
+    addPostCondition() {
+      this.taskData.postConditions.push({ text: '' })
+    },
+
+    removePostCondition(index) {
+      this.taskData.postConditions.splice(index, 1)
+    },
+
+    addTag() {
+      if (this.newTag.trim() && !this.taskData.tags.includes(this.newTag.trim())) {
+        this.taskData.tags.push(this.newTag.trim())
+        this.newTag = ''
+      }
+    },
+
+    removeTag(index) {
+      this.taskData.tags.splice(index, 1)
+    },
+
+    toggleLibrary(libId) {
+      const index = this.taskData.libraries.indexOf(libId)
+      if (index > -1) {
+        this.taskData.libraries.splice(index, 1)
+      } else {
+        this.taskData.libraries.push(libId)
+      }
+    },
+
+    isLibrarySelected(libId) {
+      return this.taskData.libraries.includes(libId)
+    },
+
+    getLibraryName(libId) {
+      const lib = this.availableLibraries.find(l => l.id === libId)
+      return lib ? lib.name : libId
+    },
+
+    addExample() {
+      this.taskData.examples.push({
+        description: '',
+        input: '',
+        output: '',
+        isPublic: true
+      })
+    },
+
+    removeExample(index) {
+      if (this.taskData.examples.length > 1) {
+        this.taskData.examples.splice(index, 1)
+      }
+    },
+
+    addTest() {
+      this.taskData.tests.push({
+        input: '',
+        expectedOutput: '',
+        isPublic: false,
+        weight: 5,
+        checkType: 'exact',
+        customCheck: ''
+      })
+    },
+
+    removeTest(index) {
+      if (this.taskData.tests.length > 1) {
+        this.taskData.tests.splice(index, 1)
+      }
+    },
+
+    toggleTestVisibility(index) {
+      this.taskData.tests[index].isPublic = !this.taskData.tests[index].isPublic
+    },
+
+    importTests() {
+      console.log('Импорт тестов')
+    },
+
+    getAvailableTypes() {
+      const baseTypes = ['int', 'float', 'double', 'string', 'boolean', 'char', 'byte']
+      const collectionTypes = ['array', 'list', 'vector', 'map', 'dictionary', 'set']
+
+      if (this.taskData.language === 'python') {
+        return [...baseTypes, 'list', 'dict', 'tuple', 'set', 'None']
+      } else if (this.taskData.language === 'java') {
+        return [...baseTypes, 'List', 'ArrayList', 'Map', 'HashMap', 'Set', 'HashSet']
+      } else if (this.taskData.language === 'cpp') {
+        return [...baseTypes, 'vector', 'array', 'map', 'set', 'string']
+      }
+
+      return [...baseTypes, ...collectionTypes]
+    },
+
+    generateFunctionSignature() {
+      if (!this.taskData.functionName) return '// Введите имя функции'
+
+      const params = this.taskData.parameters
+          .filter(p => p.name)
+          .map(p => {
+            let paramStr = p.name
+            if (p.type) paramStr += `: ${p.type}`
+            if (p.defaultValue) paramStr += ` = ${p.defaultValue}`
+            return paramStr
+          })
+          .join(', ')
+
+      let signature = `${this.taskData.functionName}(${params})`
+
+      if (this.taskData.returnType !== 'void') {
+        signature += ` -> ${this.taskData.returnType}`
+      }
+
+      return signature
+    },
+
+    getLanguageName(langId) {
+      const lang = this.availableLanguages.find(l => l.id === langId)
+      return lang ? lang.name : langId
+    },
+
+    getDifficultyLabel(difficulty) {
+      const diff = this.difficultyLevels.find(d => d.value === difficulty)
+      return diff ? diff.label : difficulty
+    },
+
+    saveDraft() {
+      console.log('Сохранение черновика:', this.taskData)
+      alert('Черновик сохранен!')
+    },
+
+    saveTask() {
+      console.log('Сохранение задачи:', this.taskData)
+      alert('Задача успешно создана!')
+    }
+  },
+  watch: {
+    'taskData.language'(newLang) {
+      if (newLang === 'python') {
+        this.taskData.codeTemplate = `def {{function_signature}}:
+    \"\"\"
+    {{function_description}}
+    \"\"\"
+    # Ваша реализация здесь
+    pass`
+
+        this.taskData.mainTemplate = `if __name__ == "__main__":
+    # Пример использования
+    {{function_call}}
+    print("Результат:", result)`
+
+      } else if (newLang === 'java') {
+        this.taskData.codeTemplate = `public class Solution {
+    public static {{function_signature}} {
+        // Ваша реализация здесь
+    }
+}`
+
+        this.taskData.mainTemplate = `public class Main {
+    public static void main(String[] args) {
+        // Пример использования
+        {{function_call}};
+        System.out.println("Результат: " + result);
+    }
+}`
+      }
     }
   },
   metaInfo: {
-    title: 'Task-Template-Builder - Sarcastic Affectionate Gerbil',
+    title: 'Конструктор задач - CodeCraft',
     meta: [
       {
         property: 'og:title',
-        content: 'Task-Template-Builder - Sarcastic Affectionate Gerbil',
+        content: 'Конструктор задач - CodeCraft',
       },
     ],
   },
@@ -2036,102 +1422,1186 @@ export default {
   width: 100%;
   display: block;
   min-height: 100vh;
+  font-family: var(--font-family-body);
+  background: var(--color-surface);
 }
- 
+
 .task-template-builder-container11 {
   display: none;
 }
- 
+
 .task-template-builder-container12 {
   display: contents;
 }
- 
-.task-template-builder-text182 {
-  font-weight: 700;
+
+.container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+
 }
- 
-.task-template-builder-io-block2 {
-  border: 1px dashed var(--color-border);
-  padding: var(--spacing-sm);
-  background: var(--color-surface);
-  border-radius: var(--border-radius-sm);
+
+/* Заголовок */
+.builder-header {
+  margin-bottom: var(--spacing-2xl);
 }
- 
-.task-template-builder-action-row {
-  gap: var(--spacing-sm);
+
+.title-section {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.builder-title {
+  color: var(--color-on-surface);
+  font-size: var(--font-size-hero);
+  margin-bottom: var(--spacing-md);
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-heading);
   display: flex;
-  flex-wrap: wrap;
-}
- 
-.task-template-builder-rail-column {
+  align-items: center;
+  justify-content: center;
   gap: var(--spacing-md);
+  line-height: var(--line-height-heading);
+}
+
+.title-icon {
+  font-size: var(--font-size-xl);
+}
+
+.builder-subtitle {
+  color: var(--color-on-surface-secondary);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-xl);
+  line-height: var(--line-height-body);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Прогресс-бар */
+.wizard-progress {
+  padding: var(--spacing-lg);
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--color-backplate);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+  border: 1px solid var(--color-border);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  transition: width var(--animation-duration-slow) var(--animation-curve-primary);
+  border-radius: var(--border-radius-full);
+}
+
+.steps-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+}
+
+.step-counter {
+  color: var(--color-on-surface-secondary);
+  font-weight: var(--font-weight-body);
+}
+
+.step-name {
+  color: var(--color-on-surface);
+  font-weight: var(--font-weight-heading);
+  background: var(--color-primary);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-full);
+}
+
+/* Основной лейаут */
+.wizard-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--spacing-xl);
+  align-items: start;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.wizard-sidebar {
+  position: sticky;
+  top: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* Навигация по шагам */
+.steps-nav {
+  padding: var(--spacing-lg);
+}
+
+.step-nav-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+  margin-bottom: var(--spacing-sm);
+  border: 1px solid transparent;
+}
+
+.step-nav-item:last-child {
+  margin-bottom: 0;
+}
+
+.step-nav-item:hover {
+  background: var(--color-backplate);
+  border-color: var(--color-border);
+  transform: translateX(var(--spacing-xs));
+}
+
+.step-nav-item.active {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-color: var(--color-primary);
+  border-left: 4px solid var(--color-primary);
+}
+
+.step-nav-item.completed {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border-color: var(--color-accent);
+}
+
+.step-nav-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-heading);
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+  border: 2px solid transparent;
+}
+
+.step-nav-item.active .step-nav-icon {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.step-nav-item.completed .step-nav-icon {
+  background: var(--color-accent);
+  color: var(--color-on-surface);
+  border-color: var(--color-accent);
+}
+
+.step-nav-content h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-heading);
+  color: var(--color-on-surface);
+  font-family: var(--font-family-heading);
+}
+
+.step-nav-content p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
+  line-height: var(--line-height-body);
+}
+
+/* Быстрый предпросмотр и статистика */
+.quick-preview,
+.stats-preview {
+  padding: var(--spacing-lg);
+}
+
+.quick-preview h4,
+.stats-preview h4 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-base);
+  color: var(--color-on-surface);
+  font-family: var(--font-family-heading);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.preview-icon {
+  font-size: var(--font-size-base);
+}
+
+.preview-badges {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.preview-badge {
+  background: var(--color-backplate);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  border-left: 3px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+}
+
+.preview-badge:hover {
+  transform: translateX(var(--spacing-xs));
+  box-shadow: var(--shadow-level-1);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.stat-item {
+  text-align: center;
+  padding: var(--spacing-md);
+  background: var(--color-backplate);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.stat-value {
+  display: block;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-heading);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-family-heading);
+}
+
+.stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
+  text-transform: lowercase;
+}
+
+/* Основное содержимое */
+.wizard-main {
+  background: var(--color-surface-elevated);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-level-2);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.step-content {
+  padding: var(--spacing-2xl);
+  min-height: 600px;
+}
+
+.step-header {
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.step-header h2 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: var(--font-size-xl);
+  color: var(--color-on-surface);
+  font-family: var(--font-family-heading);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.step-icon {
+  font-size: var(--font-size-lg);
+}
+
+.step-header p {
+  margin: 0;
+  color: var(--color-on-surface-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-body);
+}
+
+/* Сетка форм */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-section {
+  padding: var(--spacing-lg);
+}
+
+.form-section h3 {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-on-surface);
+  font-family: var(--font-family-heading);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* Группы форм */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: var(--font-weight-heading);
+  color: var(--color-on-surface);
+  font-family: var(--font-family-body);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.label-icon {
+  font-size: var(--font-size-base);
+}
+
+.form-group label.required::after {
+  content: " *";
+  color: var(--color-accent);
+}
+
+.input-container {
+  padding: var(--spacing-xs);
+}
+
+.vintage-border {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-surface);
+  box-shadow:
+      inset 0 1px 2px color-mix(in srgb, var(--color-on-surface) 3%, transparent),
+      0 2px 4px color-mix(in srgb, var(--color-neutral) 5%, transparent);
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+}
+
+.vintage-border:focus-within {
+  border-color: var(--color-primary);
+  box-shadow:
+      inset 0 1px 2px color-mix(in srgb, var(--color-on-surface) 3%, transparent),
+      0 2px 8px color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+  font-family: var(--font-family-body);
+  background: transparent;
+  color: var(--color-on-surface);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group input.error {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.char-counter {
+  text-align: right;
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
+  margin-top: var(--spacing-xs);
+  font-style: italic;
+}
+
+.hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
+  margin-top: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-style: italic;
+}
+
+.hint-icon {
+  font-size: var(--font-size-sm);
+}
+
+.hint code {
+  background: var(--color-backplate);
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+}
+
+/* Кнопки */
+.btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-heading);
+  cursor: pointer;
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  text-decoration: none;
+  font-family: var(--font-family-body);
+}
+
+.btn-sm {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  box-shadow: var(--shadow-level-1);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--color-primary) 85%, black);
+  box-shadow: var(--shadow-level-2);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-on-surface);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-on-surface);
+  box-shadow: var(--shadow-level-1);
+}
+
+.btn-accent:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--color-accent) 85%, black);
+  box-shadow: var(--shadow-level-2);
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--color-on-surface-secondary);
+  text-decoration: underline;
+  padding: var(--spacing-sm);
+}
+
+.btn-text:hover {
+  color: var(--color-primary);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-icon {
+  font-size: var(--font-size-base);
+}
+
+.btn-remove {
+  background: var(--color-accent);
+  color: var(--color-on-surface);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-base);
+  transition: background var(--animation-duration-standard) var(--animation-curve-primary);
+}
+
+.btn-remove:hover {
+  background: color-mix(in srgb, var(--color-accent) 80%, black);
+}
+
+.btn-remove:disabled {
+  background: var(--color-border);
+  cursor: not-allowed;
+}
+
+/* Навигация */
+.wizard-navigation {
+  padding: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-backplate);
+  border-top: 1px solid var(--color-border);
+}
+
+.nav-left,
+.nav-center,
+.nav-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.nav-center {
+  justify-content: center;
+}
+
+.nav-right {
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+}
+
+.step-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: var(--color-surface);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--color-border);
+}
+
+.step-current {
+  font-weight: var(--font-weight-heading);
+  color: var(--color-primary);
+  font-size: var(--font-size-lg);
+}
+
+.step-separator {
+  color: var(--color-on-surface-secondary);
+}
+
+.step-total {
+  color: var(--color-on-surface-secondary);
+}
+
+/* Пример секции */
+.example-section {
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+}
+
+.example-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.example-bad,
+.example-good {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+}
+
+.example-bad {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border: 1px dashed var(--color-accent);
+}
+
+.example-good {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  border: 1px dashed var(--color-primary);
+}
+
+.example-bad h4,
+.example-good h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-heading);
+}
+
+.example-bad p,
+.example-good p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
+  line-height: var(--line-height-body);
+}
+
+.example-good code {
+  background: var(--color-backplate);
+  padding: 2px 6px;
+  border-radius: var(--border-radius-sm);
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+}
+
+/* Параметры */
+.params-container {
+  padding: var(--spacing-md);
+}
+
+.params-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr 40px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--color-backplate);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-sm);
+  font-weight: var(--font-weight-heading);
+  font-size: var(--font-size-sm);
+}
+
+.param-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr 40px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  align-items: center;
+}
+
+/* Условия */
+.conditions-list {
+  padding: var(--spacing-md);
+}
+
+.condition-item {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  align-items: center;
+}
+
+.condition-item input {
+  flex: 1;
+}
+
+/* Предпросмотр */
+.preview-section {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.code-preview {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.code-preview pre {
+  margin: 0;
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-body);
+  color: var(--color-on-surface);
+}
+
+/* Языки */
+.languages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+}
+
+.language-option:hover {
+  border-color: var(--color-primary);
+}
+
+.language-option.selected {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.lang-icon {
+  font-size: var(--font-size-xl);
+}
+
+.lang-info {
   display: flex;
   flex-direction: column;
 }
- 
-.task-template-builder-text208 {
-  font-weight: 700;
+
+.lang-info strong {
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-heading);
 }
- 
-.task-template-builder-text211 {
-  font-weight: 700;
+
+.lang-info span {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
 }
- 
-.task-template-builder-text218 {
-  font-weight: 700;
+
+/* Библиотеки */
+.libraries-panel {
+  padding: var(--spacing-md);
 }
- 
-.task-template-builder-container27 {
-  display: none;
+
+.libraries-search {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-backplate);
 }
- 
-.task-template-builder-container28 {
-  display: contents;
+
+.libraries-search input {
+  width: 100%;
 }
- 
-.task-template-builder-container29 {
-  display: none;
+
+.libraries-list {
+  max-height: 300px;
+  overflow-y: auto;
 }
- 
-.task-template-builder-container30 {
-  display: contents;
-}
- 
-.task-template-builder-container31 {
-  right: 50px;
-  border: 1px solid #ffffff5c;
-  bottom: 30px;
+
+.library-item {
   display: flex;
-  z-index: 22;
-  position: fixed;
-  box-shadow: 5px 5px 10px 0px rgba(31, 31, 31, 0.4);
-  min-height: auto;
+  justify-content: space-between;
   align-items: center;
-  padding-top: 8px;
-  padding-left: 12px;
-  border-radius: 8px;
-  padding-right: 12px;
-  padding-bottom: 8px;
-  backdrop-filter: blur(6px);
-  background-color: rgba(41, 41, 41, 0.41);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background var(--animation-duration-standard) var(--animation-curve-primary);
 }
- 
-.task-template-builder-icon244 {
-  width: 24px;
-  margin-right: 4px;
+
+.library-item:last-child {
+  border-bottom: none;
 }
- 
-.task-template-builder-text243 {
-  color: white;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 24px;
+
+.library-item:hover {
+  background: var(--color-backplate);
 }
- 
-@media(max-width: 479px) {
-  .task-template-builder-action-row {
+
+.library-item.selected {
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.lib-info strong {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-family-heading);
+}
+
+.lib-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
+  margin: var(--spacing-xs) 0 0 0;
+}
+
+.lib-compatibility {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-full);
+  font-weight: var(--font-weight-heading);
+}
+
+.lib-compatibility.full {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  color: var(--color-primary);
+}
+
+.lib-compatibility.limited {
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  color: var(--color-accent);
+}
+
+.selected-libraries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.selected-library {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+}
+
+/* Настройки выполнения */
+.execution-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+/* Примеры */
+.examples-container {
+  padding: var(--spacing-md);
+}
+
+.example-item {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.example-item:last-child {
+  margin-bottom: 0;
+}
+
+.example-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.example-header h4 {
+  margin: 0;
+  font-family: var(--font-family-heading);
+}
+
+.example-content {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: normal;
+  cursor: pointer;
+}
+
+/* Тесты */
+.tests-management {
+  margin-bottom: var(--spacing-xl);
+}
+
+.tests-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.tests-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.tests-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.test-case {
+  padding: var(--spacing-lg);
+  border: 2px solid transparent;
+}
+
+.test-case.public {
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.test-info h4 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-family: var(--font-family-heading);
+}
+
+.test-meta {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-on-surface-secondary);
+}
+
+.test-visibility {
+  font-weight: var(--font-weight-heading);
+}
+
+.test-weight {
+  font-weight: var(--font-weight-heading);
+}
+
+.test-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.test-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.test-io {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.io-section label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: var(--font-weight-heading);
+}
+
+.io-section textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.test-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Настройки тестирования */
+.testing-settings {
+  padding: var(--spacing-lg);
+}
+
+.testing-settings h3 {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-family: var(--font-family-heading);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* Теги */
+.tags-input {
+  padding: var(--spacing-sm);
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-secondary);
+  color: var(--color-on-surface);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  gap: var(--spacing-xs);
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  line-height: 1;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Оценка сложности */
+.difficulty-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.difficulty-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
+  text-align: center;
+}
+
+.difficulty-option:hover {
+  border-color: var(--color-primary);
+}
+
+.difficulty-option.selected {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.diff-icon {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-xs);
+}
+
+.diff-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-heading);
+}
+
+/* Время выполнения */
+.time-estimate {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+}
+
+.time-estimate input {
+  width: 80px;
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+  .wizard-layout {
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 1024px) {
+  .wizard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .wizard-sidebar {
+    position: static;
+    order: 2;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .test-content {
+    grid-template-columns: 1fr;
+  }
+
+  .test-io {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .step-content {
+    padding: var(--spacing-lg);
+  }
+
+  .builder-title {
+    font-size: var(--font-size-xl);
     flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .wizard-navigation {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .nav-left,
+  .nav-center,
+  .nav-right {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav-right {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .difficulty-selector {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .languages-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .params-header,
+  .param-row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .tests-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+
+  .tests-actions {
+    justify-content: center;
+  }
+
+  .test-header {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .test-actions {
+    justify-content: flex-start;
+  }
+
+  .example-content {
+    grid-template-columns: 1fr;
   }
 }
 </style>
