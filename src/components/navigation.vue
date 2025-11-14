@@ -151,8 +151,23 @@
             </li>
           </ul>
           <div class="navigation__actions">
-            <button class="navigation__action-btn btn-outline btn">Войти</button>
+            <div v-if="user" class="user-menu">
+              <button class="navigation__action-btn btn-outline btn">
+                {{ user.firstName }} {{ user.lastName }}
+              </button>
+              <button @click="logout" class="navigation__action-btn btn-outline btn">
+                Выйти
+              </button>
+            </div>
+            <div v-else class="auth-buttons">
+              <button @click="$router.push('/auth')" class="navigation__action-btn btn-outline btn">
+                Войти
+              </button>
+            </div>
           </div>
+<!--          <div class="navigation__actions">-->
+<!--            <button class="navigation__action-btn btn-outline btn">Войти</button>-->
+<!--          </div>-->
         </div>
       </div>
     </nav>
@@ -234,10 +249,40 @@ import DangerousHTML from 'dangerous-html/vue'
 
 export default {
   name: 'Navigation',
-  props: {},
-  components: {
-    DangerousHTML,
+  data() {
+    return {
+      user: null
+    }
   },
+  mounted() {
+    this.checkAuth()
+  },
+  methods: {
+    checkAuth() {
+      const userData = localStorage.getItem('user')
+      if (userData) {
+        try {
+          const parsedData = JSON.parse(userData)
+          // Проверяем структуру данных
+          if (parsedData.user) {
+            this.user = parsedData.user
+          } else if (parsedData.firstName) {
+            this.user = parsedData
+          }
+          console.log('User data:', this.user)
+        } catch (error) {
+          console.error('Error parsing user data:', error)
+        }
+      }
+    },
+    logout() {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+      localStorage.removeItem('rememberMe')
+      localStorage.clear()
+      this.user = null
+    }
+  }
 }
 </script>
 

@@ -540,21 +540,18 @@ export default {
 
     const data = await response.json()
     console.log("Success: ", data)
-    
-    // Сохраняем токен
-    if (data.accessToken) {
-      localStorage.setItem('token', data.accessToken)
-      localStorage.setItem('user', JSON.stringify({
-        email: this.loginForm.email
-      }))
-      
+
+
+    localStorage.setItem('user', JSON.stringify(data))
+    localStorage.setItem('accessToken', data.accessToken)
+    localStorage.setItem('refreshToken', data.refreshToken)
       if (this.loginForm.rememberMe) {
         localStorage.setItem('rememberMe', 'true')
       }
       
       // Перенаправляем на главную страницу
       this.$router.push('/')
-    }
+
     
   } catch (error) {
     console.error('Login error:', error)
@@ -573,20 +570,29 @@ export default {
       this.loading = true
       
       try {
-        // Имитация API запроса
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        
-        // Автоматически входим после регистрации
         const userData = {
-          id: 2,
           firstName: this.registerForm.firstName,
           lastName: this.registerForm.lastName,
           email: this.registerForm.email,
-          role: 'teacher'
+          password: this.registerForm.password,
         }
+        const response = await fetch("http://hobbit1021.ru:50305/api/auth/register", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': '*/*'
+          },
+          body: JSON.stringify(userData)
+        })
+
+        const data = await response.json()
+        console.log("Success: ", data)
         
-        localStorage.setItem('user', JSON.stringify(userData))
-        localStorage.setItem('token', 'mock-jwt-token')
+        localStorage.setItem('user', JSON.stringify(response))
+        localStorage.setItem('accessToken', data.accessToken)
+        console.log(localStorage.getItem('accessToken'))
+        localStorage.setItem('refreshToken', data.refreshToken)
+
         
         // Перенаправляем на главную страницу
         this.$router.push('/')

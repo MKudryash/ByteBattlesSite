@@ -1,14 +1,18 @@
 <template>
   <div class="home-container1">
-    <a href="https://play.teleporthq.io/signup">
-      
-    </a>
+    <app-navigation></app-navigation>
+    <app-footer></app-footer>
+
   </div>
 </template>
 
 <script>
+import AppFooter from "@/components/footer.vue";
+import AppNavigation from "@/components/navigation.vue";
+
 export default {
   name: 'Home',
+  components: {AppNavigation, AppFooter},
   props: {},
   metaInfo: {
     title: 'Sarcastic Affectionate Gerbil',
