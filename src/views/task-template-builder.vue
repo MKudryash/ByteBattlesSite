@@ -20,7 +20,6 @@
     right: 0;
     bottom: 0;
     background-image:
-      radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--color-primary) 8%, transparent) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--color-secondary) 6%, transparent) 0%, transparent 50%),
       repeating-linear-gradient(
         0deg,
@@ -362,7 +361,7 @@
                 <p>Опишите функцию, которую должен реализовать студент. Укажите параметры, возвращаемое значение и контракты</p>
               </div>
 
-              <div class="form-grid">
+
                 <div class="form-section retro-card">
                   <h3>📐 Основная сигнатура</h3>
 
@@ -453,95 +452,6 @@
                   </div>
                 </div>
 
-                <div class="form-section retro-card">
-                  <h3>📖 Документация и контракты</h3>
-
-                  <div class="form-group">
-                    <label for="function-description">
-                      <span class="label-icon">📄</span>
-                      Описание функции
-                    </label>
-                    <div class="input-container vintage-border">
-                      <textarea
-                          id="function-description"
-                          v-model="taskData.functionDescription"
-                          rows="4"
-                          placeholder="Что делает эта функция? Какие данные обрабатывает? Что возвращает?"
-                      ></textarea>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label>
-                      <span class="label-icon">🔒</span>
-                      Предусловия (Pre-conditions)
-                    </label>
-                    <div class="conditions-list vintage-border">
-                      <div
-                          v-for="(condition, index) in taskData.preConditions"
-                          :key="index"
-                          class="condition-item"
-                      >
-                        <input
-                            type="text"
-                            v-model="condition.text"
-                            placeholder="Например: массив не должен быть пустым"
-                            class="vintage-border"
-                        >
-                        <button @click="removePreCondition(index)" class="btn-remove">×</button>
-                      </div>
-                      <button @click="addPreCondition" class="btn-outline btn-sm">
-                        <span class="btn-icon">+</span>
-                        Добавить условие
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label>
-                      <span class="label-icon">✅</span>
-                      Постусловия (Post-conditions)
-                    </label>
-                    <div class="conditions-list vintage-border">
-                      <div
-                          v-for="(condition, index) in taskData.postConditions"
-                          :key="index"
-                          class="condition-item"
-                      >
-                        <input
-                            type="text"
-                            v-model="condition.text"
-                            placeholder="Например: результат должен быть положительным числом"
-                            class="vintage-border"
-                        >
-                        <button @click="removePostCondition(index)" class="btn-remove">×</button>
-                      </div>
-                      <button @click="addPostCondition" class="btn-outline btn-sm">
-                        <span class="btn-icon">+</span>
-                        Добавить условие
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="time-complexity">
-                      <span class="label-icon">⏱️</span>
-                      Ожидаемая сложность
-                    </label>
-                    <div class="input-container vintage-border">
-                      <select id="time-complexity" v-model="taskData.timeComplexity">
-                        <option value="">Не указано</option>
-                        <option value="O(1)">O(1) - Константная</option>
-                        <option value="O(log n)">O(log n) - Логарифмическая</option>
-                        <option value="O(n)">O(n) - Линейная</option>
-                        <option value="O(n log n)">O(n log n) - Линеарифметическая</option>
-                        <option value="O(n²)">O(n²) - Квадратичная</option>
-                        <option value="O(2^n)">O(2^n) - Экспоненциальная</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               <!-- Предпросмотр сигнатуры -->
               <div class="preview-section retro-card">
@@ -740,7 +650,7 @@
                 <p>Определите, как будет вызываться функция и какие примеры показывать студентам</p>
               </div>
 
-              <div class="form-grid">
+
                 <div class="form-section retro-card">
                   <h3>🎯 Точка входа (main)</h3>
 
@@ -794,73 +704,6 @@
                   </div>
                 </div>
 
-                <div class="form-section retro-card">
-                  <h3>📖 Примеры использования</h3>
-
-                  <div class="examples-container vintage-border">
-                    <div
-                        v-for="(example, index) in taskData.examples"
-                        :key="index"
-                        class="example-item retro-card"
-                    >
-                      <div class="example-header">
-                        <h4>Пример {{ index + 1 }}</h4>
-                        <button @click="removeExample(index)" class="btn-remove">Удалить</button>
-                      </div>
-
-                      <div class="example-content">
-                        <div class="form-group">
-                          <label>Описание примера</label>
-                          <div class="input-container vintage-border">
-                            <input
-                                type="text"
-                                v-model="example.description"
-                                placeholder="Краткое описание этого примера"
-                            >
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label>Входные данные</label>
-                          <div class="input-container vintage-border">
-                            <textarea
-                                v-model="example.input"
-                                rows="3"
-                                placeholder="Входные данные для примера"
-                            ></textarea>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label>Ожидаемый вывод</label>
-                          <div class="input-container vintage-border">
-                            <textarea
-                                v-model="example.output"
-                                rows="3"
-                                placeholder="Ожидаемый результат"
-                            ></textarea>
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <label class="checkbox-label">
-                            <input
-                                type="checkbox"
-                                v-model="example.isPublic"
-                            >
-                            Показывать студентам
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button @click="addExample" class="btn-outline">
-                      <span class="btn-icon">+</span>
-                      Добавить пример
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Шаг 5: Тестирование -->
@@ -876,16 +719,6 @@
               <div class="tests-management">
                 <div class="tests-header">
                   <h3>🧪 Тестовые случаи</h3>
-                  <div class="tests-actions">
-                    <button @click="addTest" class="btn-primary">
-                      <span class="btn-icon">+</span>
-                      Новый тест
-                    </button>
-                    <button @click="importTests" class="btn-outline">
-                      <span class="btn-icon">📥</span>
-                      Импорт тестов
-                    </button>
-                  </div>
                 </div>
 
                 <div class="tests-list">
@@ -901,7 +734,6 @@
                           <span class="test-visibility">
                             {{ test.isPublic ? '👁️ Публичный' : '👻 Скрытый' }}
                           </span>
-                          <span class="test-weight">⚖️ Вес: {{ test.weight }}</span>
                         </div>
                       </div>
                       <div class="test-actions">
@@ -916,22 +748,22 @@
 
                     <div class="test-content">
                       <div class="test-io">
-                        <div class="io-section">
-                          <label>📥 Входные данные</label>
+                        <div class="form-group">
+                          <label>Входные данные</label>
                           <div class="input-container vintage-border">
                             <textarea
                                 v-model="test.input"
-                                rows="4"
-                                placeholder="Входные данные для теста"
+                                rows="3"
+                                placeholder="Входные данные для примера"
                             ></textarea>
                           </div>
                         </div>
-                        <div class="io-section">
-                          <label>📤 Ожидаемый вывод</label>
+                        <div class="form-group">
+                          <label>Ожидаемый вывод</label>
                           <div class="input-container vintage-border">
                             <textarea
-                                v-model="test.expectedOutput"
-                                rows="4"
+                                v-model="test.output"
+                                rows="3"
                                 placeholder="Ожидаемый результат"
                             ></textarea>
                           </div>
@@ -939,30 +771,8 @@
                       </div>
 
                       <div class="test-settings">
-                        <div class="form-group">
-                          <label>⚖️ Вес теста</label>
-                          <div class="input-container">
-                            <input
-                                type="range"
-                                v-model.number="test.weight"
-                                min="1"
-                                max="10"
-                            >
-                            <span>{{ test.weight }}</span>
-                          </div>
-                        </div>
 
-                        <div class="form-group">
-                          <label>🔍 Тип проверки</label>
-                          <div class="input-container vintage-border">
-                            <select v-model="test.checkType">
-                              <option value="exact">Точное совпадение</option>
-                              <option value="contains">Содержит текст</option>
-                              <option value="regex">Регулярное выражение</option>
-                              <option value="custom">Пользовательская проверка</option>
-                            </select>
-                          </div>
-                        </div>
+
 
                         <div class="form-group" v-if="test.checkType === 'custom'">
                           <label>💻 Код проверки</label>
@@ -975,37 +785,18 @@
                           </div>
                         </div>
                       </div>
+
                     </div>
+
                   </div>
+
+                  <button @click="addTest" class="btn-outline_left">
+                    <span class="btn-icon">+</span>
+                    Добавить пример
+                  </button>
                 </div>
               </div>
 
-              <!-- Настройки тестирования -->
-              <div class="testing-settings retro-card">
-                <h3>⚙️ Настройки тестирования</h3>
-                <div class="settings-grid">
-                  <div class="form-group">
-                    <label class="checkbox-label">
-                      <input type="checkbox" v-model="taskData.autoGrade">
-                      🤖 Автоматическая оценка
-                    </label>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="checkbox-label">
-                      <input type="checkbox" v-model="taskData.showDetailedErrors">
-                      🔍 Показывать детальные ошибки
-                    </label>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="checkbox-label">
-                      <input type="checkbox" v-model="taskData.allowCustomTests">
-                      🧪 Разрешить пользовательские тесты
-                    </label>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Навигация -->
@@ -1014,7 +805,7 @@
                 <button
                     v-if="currentStep > 1"
                     @click="previousStep"
-                    class="btn-outline"
+                    class="btn-outline_left"
                 >
                   <span class="btn-icon">←</span>
                   Назад
@@ -1138,18 +929,13 @@ export default {
       difficultyLevels: [
         { value: 'easy', label: 'Начинающий', icon: '🌱' },
         { value: 'medium', label: 'Средний', icon: '🎯' },
-        { value: 'hard', label: 'Продвинутый', icon: '🚀' },
-        { value: 'expert', label: 'Эксперт', icon: '🏆' }
+        { value: 'hard', label: 'Продвинутый', icon: '🚀' }
       ],
       availableLanguages: [
         { id: 'python', name: 'Python', version: '3.10', icon: '🐍' },
         { id: 'java', name: 'Java', version: '11', icon: '☕' },
         { id: 'cpp', name: 'C++', version: '17', icon: '⚡' },
-        { id: 'csharp', name: 'C#', version: '10', icon: '🎵' },
-        { id: 'javascript', name: 'JavaScript', version: 'ES6', icon: '📜' },
-        { id: 'typescript', name: 'TypeScript', version: '4.0', icon: '🔷' },
-        { id: 'go', name: 'Go', version: '1.19', icon: '🐹' },
-        { id: 'rust', name: 'Rust', version: '1.65', icon: '🦀' }
+        { id: 'csharp', name: 'C#', version: '10', icon: '🎵' }
       ],
       availableLibraries: [
         { id: 'numpy', name: 'NumPy', version: '1.23.0', description: 'Библиотека для научных вычислений', compatibility: 'full' },
@@ -1418,6 +1204,7 @@ export default {
 </script>
 
 <style scoped>
+
 .task-template-builder-container10 {
   width: 100%;
   display: block;
@@ -1860,106 +1647,235 @@ export default {
 }
 
 /* Кнопки */
-.btn {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
-  font-weight: var(--font-weight-heading);
-  cursor: pointer;
-  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
-  border: none;
+
+.btn-outline_left {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 2px solid;
+  border-radius: var(--border-radius-md);
   font-size: var(--font-size-base);
+  font-weight: var(--font-weight-heading);
   text-decoration: none;
+  cursor: pointer;
+  transition: all var(--animation-duration-standard) var(--animation-curve-primary);
   font-family: var(--font-family-body);
 }
+.btn-outline {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-on-surface);
+}
 
-.btn-sm {
-  padding: var(--spacing-sm) var(--spacing-md);
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+/* Кнопка Сохранить задачу - Ретро стиль */
+.wizard-navigation .btn-accent {
+  color: var(--color-on-surface);
+  border: 2px solid var(--color-accent);
+  background: var(--color-accent);
+  box-shadow:
+      3px 3px 0 color-mix(in srgb, var(--color-secondary) 70%, transparent),
+      var(--shadow-level-1);
+  position: relative;
+  font-weight: 600;
+  font-family: var(--font-family-heading);
+  letter-spacing: 0.5px;
+  padding: var(--spacing-md) var(--spacing-2xl);
+  transition: all 0.2s ease;
+  text-transform: uppercase;
   font-size: var(--font-size-sm);
 }
 
-.btn-primary {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  box-shadow: var(--shadow-level-1);
-}
-
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background: color-mix(in srgb, var(--color-primary) 85%, black);
-  box-shadow: var(--shadow-level-2);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-on-surface);
-}
-
-.btn-outline:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  transform: translateY(-1px);
-}
-
-.btn-accent {
-  background: var(--color-accent);
-  color: var(--color-on-surface);
-  box-shadow: var(--shadow-level-1);
-}
-
-.btn-accent:hover:not(:disabled) {
-  transform: translateY(-2px);
+/* Эффект нажатия */
+.wizard-navigation .btn-accent:hover:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow:
+      2px 2px 0 color-mix(in srgb, var(--color-secondary) 70%, transparent),
+      var(--shadow-level-1);
   background: color-mix(in srgb, var(--color-accent) 85%, black);
-  box-shadow: var(--shadow-level-2);
 }
 
-.btn-text {
-  background: none;
-  border: none;
-  color: var(--color-on-surface-secondary);
-  text-decoration: underline;
-  padding: var(--spacing-sm);
+/* Активное состояние */
+.wizard-navigation .btn-accent:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow:
+      0px 0px 0 color-mix(in srgb, var(--color-secondary) 70%, transparent),
+      var(--shadow-level-1);
 }
 
-.btn-text:hover {
-  color: var(--color-primary);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-.btn-icon {
+/* Иконка дискеты */
+.wizard-navigation .btn-accent .btn-icon {
   font-size: var(--font-size-base);
+  margin-right: var(--spacing-xs);
+  transition: transform 0.2s ease;
 }
 
-.btn-remove {
-  background: var(--color-accent);
-  color: var(--color-on-surface);
-  border: none;
-  border-radius: var(--border-radius-sm);
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-base);
-  transition: background var(--animation-duration-standard) var(--animation-curve-primary);
+/* Анимация иконки */
+.wizard-navigation .btn-accent:hover:not(:disabled) .btn-icon {
+  transform: scale(1.1);
 }
 
-.btn-remove:hover {
-  background: color-mix(in srgb, var(--color-accent) 80%, black);
+/* Фокус состояние */
+.wizard-navigation .btn-accent:focus-visible {
+  outline: 2px dashed var(--color-outline);
+  outline-offset: 2px;
 }
 
-.btn-remove:disabled {
-  background: var(--color-border);
+/* Disabled состояние */
+.wizard-navigation .btn-accent:disabled {
+  color: color-mix(in srgb, var(--color-on-surface) 50%, transparent);
+  border: 2px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  box-shadow:
+      2px 2px 0 color-mix(in srgb, var(--color-secondary) 20%, transparent),
+      var(--shadow-level-1);
+  transform: none;
   cursor: not-allowed;
+}
+
+/* Точки по углам в ретро-стиле */
+.wizard-navigation .btn-accent::before,
+.wizard-navigation .btn-accent::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--color-secondary);
+  border-radius: 50%;
+}
+
+.wizard-navigation .btn-accent::before {
+  top: -2px;
+  left: -2px;
+}
+
+.wizard-navigation .btn-accent::after {
+  bottom: -2px;
+  right: -2px;
+}
+
+/* Полоски по бокам */
+.wizard-navigation .btn-accent {
+  border-left: 4px solid color-mix(in srgb, var(--color-secondary) 60%, transparent);
+  border-right: 4px solid color-mix(in srgb, var(--color-secondary) 60%, transparent);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .wizard-navigation .btn-accent {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    font-size: var(--font-size-base);
+  }
+}
+/* Кнопка Продолжить - Ретро стиль */
+.wizard-navigation .btn-primary {
+  color: var(--color-on-primary);
+  border: 3px double var(--color-primary);
+  background: var(--color-primary);
+  box-shadow:
+      4px 4px 0 color-mix(in srgb, var(--color-secondary) 80%, transparent),
+      var(--shadow-level-1);
+  position: relative;
+  font-weight: 600;
+  font-family: var(--font-family-heading);
+  letter-spacing: 0.5px;
+  padding: var(--spacing-md) var(--spacing-2xl);
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  font-size: var(--font-size-sm);
+}
+
+/* Эффект нажатой кнопки */
+.wizard-navigation .btn-primary:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow:
+      2px 2px 0 color-mix(in srgb, var(--color-secondary) 80%, transparent),
+      var(--shadow-level-1);
+  background: color-mix(in srgb, var(--color-primary) 90%, black);
+}
+
+/* Активное состояние */
+.wizard-navigation .btn-primary:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow:
+      0px 0px 0 color-mix(in srgb, var(--color-secondary) 80%, transparent),
+      var(--shadow-level-1);
+}
+
+/* Иконка стрелки */
+.wizard-navigation .btn-primary .btn-icon {
+  font-size: var(--font-size-base);
+  margin-left: var(--spacing-xs);
+  transition: transform 0.2s ease;
+}
+
+/* Анимация стрелки */
+.wizard-navigation .btn-primary:hover:not(:disabled) .btn-icon {
+  transform: translateX(2px);
+}
+
+/* Фокус состояние */
+.wizard-navigation .btn-primary:focus-visible {
+  outline: 2px dashed var(--color-outline);
+  outline-offset: 2px;
+}
+
+/* Disabled состояние */
+.wizard-navigation .btn-primary:disabled {
+  color: color-mix(in srgb, var(--color-on-primary) 60%, transparent);
+  border: 3px double color-mix(in srgb, var(--color-primary) 50%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  box-shadow:
+      2px 2px 0 color-mix(in srgb, var(--color-secondary) 30%, transparent),
+      var(--shadow-level-1);
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* Ретро текстура */
+.wizard-navigation .btn-primary {
+  background-image:
+      repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 2px,
+          color-mix(in srgb, var(--color-on-primary) 5%, transparent) 2px,
+          color-mix(in srgb, var(--color-on-primary) 5%, transparent) 4px
+      );
+}
+
+/* Угловые акценты */
+.wizard-navigation .btn-primary::before,
+.wizard-navigation .btn-primary::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--color-secondary);
+}
+
+.wizard-navigation .btn-primary::before {
+  top: -3px;
+  left: -3px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.wizard-navigation .btn-primary::after {
+  bottom: -3px;
+  right: -3px;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .wizard-navigation .btn-primary {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    font-size: var(--font-size-base);
+  }
 }
 
 /* Навигация */
