@@ -1,0 +1,14 @@
+services:
+  vue-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "50311:80"
+    restart: unless-stopped
+    networks:
+      - bytebattles-network
+
+networks:
+  bytebattles-network:
+    driver: bridge
